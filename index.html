@@ -512,9 +512,10 @@ function paintChart(){
   if (!r.width) return;
   cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
   const ctx = cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
-  drawChart(ctx, r.width, r.height, themeColors(), last.chartData, {hover: hoverAge, fs: r.width < 500 ? 11 : 12, padL: r.width < 500 ? 50 : 58});
+  drawChart(ctx, r.width, r.height, themeColors(), last.chartData, {hover: hoverAge, fs: r.width < 500 ? 11 : 12, padL: 40, onLayout: v => { chartL = v; }});
 }
-function pointerAge(e){ const r = cv.getBoundingClientRect(), L = r.width < 500 ? 50 : 58, w = r.width - L - 14;
+let chartL = 58;
+function pointerAge(e){ const r = cv.getBoundingClientRect(), L = chartL, w = r.width - L - 14;
   return S.startAge + clamp((e.clientX - r.left - L)/w, 0, 1) * (LAST_AGE - S.startAge); }
 cv.addEventListener("pointermove", e => { hoverAge = pointerAge(e); paintChart(); });
 cv.addEventListener("pointerdown", e => { hoverAge = pointerAge(e); paintChart(); });
