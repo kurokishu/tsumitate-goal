@@ -450,11 +450,15 @@ function niceStep(max){ const raw = max/5, p = Math.pow(10, Math.floor(Math.log1
 function yLabel(v){ if (v >= 100000000) return (v/100000000).toFixed(v%100000000?1:0) + "億"; return (v/10000).toLocaleString("ja-JP") + "万"; }
 function drawChart(ctx, W, H, col, data, opts){
   const font = opts.font || '"BIZ UDPGothic","Hiragino Sans",sans-serif', fs = opts.fs || 12;
-  const L = opts.padL || 58, R = 14, T = 16, B = 34;
-  const w = W - L - R, h = H - T - B;
   const n = data.n, xMax = LAST_AGE, xMin = n;
   const ymaxRaw = Math.max(1, ...data.a.map(p=>p.value), ...data.b.map(p=>p.value));
   const step = niceStep(ymaxRaw), ymax = Math.ceil(ymaxRaw/step)*step;
+  // 左の目盛りの文字の幅をはかって、切れないように余白を決める
+  ctx.font = `${fs}px ${font}`;
+  let labW = 0; for (let v = step; v <= ymax + 1; v += step) labW = Math.max(labW, ctx.measureText(yLabel(v)).width);
+  const L = Math.max(opts.padL || 40, Math.ceil(labW) + 14), R = 14, T = 16, B = 34;
+  if (opts.onLayout) opts.onLayout(L);
+  const w = W - L - R, h = H - T - B;
   const X = a => L + (xMax === xMin ? 0 : (a - xMin)/(xMax - xMin)) * w;
   const Y = v => T + h - v/ymax*h;
   ctx.clearRect(0,0,W,H);
