@@ -4,210 +4,210 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>Tsumitate Goal</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="何歳から積み立てると、60歳・65歳・70歳でいくらになるかを、利回り5%・3%と元本でくらべる無料のシミュレーター。副業の税金とNISAの生涯枠もわかります。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
 <style>
-/* レイアウト：通帳（つうちょう）の見開き。左に入力、右に「ゴールの日の残高」と線の図。スマホは下のタブで切りかえ */
+/* 案A「ダッシュボード」：参考画像（Gemini）に近い形。数字と線の図が主役。
+   明るい画面（ふだん）と暗い画面の2つ。スマホ・パソコンの設定に合わせ、右上のボタンでも切りかえられる */
 :root{
-  --paper:#f3f6f5; --surface:#ffffff; --ink:#1b2735; --muted:#5b6876; --rule:#d3dfdc; --rule-strong:#b7c8c4;
-  --s5:#1f5fa8; --s3:#b97a12; --s0:#7d8a97; --shu:#c63f2a; --good:#2c7a4b; --warn:#a85d14; --fill5:rgba(31,95,168,.10);
-  --tabbar:#1b2735; --tabbar-ink:#e9eff3;
-  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
-  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic","Meiryo",system-ui,sans-serif;
-  --r:10px;
+  --bg:#f4f6fa; --surface:#ffffff; --surface2:#e9edf4; --ink:#151a24; --muted:#5d6676; --label:#384152; --rule:#e2e6ee; --rule-strong:#cdd3de;
+  --s5:#2f6fd6; --s3:#c47a10; --s0:#d4574c; --shu:#5b6476; --goal:#5b6476; --good:#1d8a4c; --warn:#b06a00;
+  --fill5:rgba(47,111,214,.20); --fill-end:rgba(47,111,214,0); --grid:#e6e9f0; --axis:#6a7385; --tip:#ffffff; --tip-ink:#151a24;
+  --track:#d5dae4; --navbg:rgba(255,255,255,.92); --shadow:0 10px 30px rgba(21,26,36,.14); --card-shadow:0 1px 2px rgba(21,26,36,.05);
+  --brand1:#2f6fd6; --brand2:#8b5cf6; --brand-ink:#ffffff;
+  --good-bg:rgba(29,138,76,.10); --bad-bg:rgba(212,87,76,.10);
+  --f-num:"Inter","Noto Sans JP",system-ui,sans-serif; --f-body:"Noto Sans JP","Hiragino Sans",system-ui,sans-serif;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#0f1620; --surface:#16212d; --ink:#e5ecf2; --muted:#9dabb8; --rule:#253445; --rule-strong:#34475c;
-  --s5:#72aaf0; --s3:#e3ad4c; --s0:#8f9cab; --shu:#ec6a52; --good:#5fc08a; --warn:#e79a52; --fill5:rgba(114,170,240,.14);
-  --tabbar:#0a1018; --tabbar-ink:#e5ecf2; color-scheme:dark }}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0b0d12; --surface:#141821; --surface2:#1b2030; --ink:#eef1f6; --muted:#8e97a8; --label:#c5ccd9; --rule:#262c3a; --rule-strong:#343c4e;
+  --s5:#8ab4f8; --s3:#f6bf74; --s0:#f28b82; --shu:#c3cad8; --goal:#c3cad8; --good:#81c995; --warn:#f6bf74;
+  --fill5:rgba(138,180,248,.32); --fill-end:rgba(138,180,248,0); --grid:#232937; --axis:#7d879a; --tip:#1f2533; --tip-ink:#eef1f6;
+  --track:#3a4152; --navbg:rgba(20,24,33,.92); --shadow:0 10px 30px rgba(0,0,0,.5); --card-shadow:none;
+  --brand1:#8ab4f8; --brand2:#c58af9; --brand-ink:#0b0d12;
+  --good-bg:rgba(129,201,149,.14); --bad-bg:rgba(242,139,130,.14);
+  color-scheme:dark;
+}}
 :root[data-theme="dark"]{
-  --paper:#0f1620; --surface:#16212d; --ink:#e5ecf2; --muted:#9dabb8; --rule:#253445; --rule-strong:#34475c;
-  --s5:#72aaf0; --s3:#e3ad4c; --s0:#8f9cab; --shu:#ec6a52; --good:#5fc08a; --warn:#e79a52; --fill5:rgba(114,170,240,.14);
-  --tabbar:#0a1018; --tabbar-ink:#e5ecf2; color-scheme:dark }
+  --bg:#0b0d12; --surface:#141821; --surface2:#1b2030; --ink:#eef1f6; --muted:#8e97a8; --label:#c5ccd9; --rule:#262c3a; --rule-strong:#343c4e;
+  --s5:#8ab4f8; --s3:#f6bf74; --s0:#f28b82; --shu:#c3cad8; --goal:#c3cad8; --good:#81c995; --warn:#f6bf74;
+  --fill5:rgba(138,180,248,.32); --fill-end:rgba(138,180,248,0); --grid:#232937; --axis:#7d879a; --tip:#1f2533; --tip-ink:#eef1f6;
+  --track:#3a4152; --navbg:rgba(20,24,33,.92); --shadow:0 10px 30px rgba(0,0,0,.5); --card-shadow:none;
+  --brand1:#8ab4f8; --brand2:#c58af9; --brand-ink:#0b0d12;
+  --good-bg:rgba(129,201,149,.14); --bad-bg:rgba(242,139,130,.14);
+  color-scheme:dark;
+}
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
-.wrap{max-width:1120px;margin:0 auto}
-header.top{padding-block:20px 8px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
-.brand{font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:.02em;margin:0;line-height:1.2}
-.tagline{margin:0;color:var(--muted);font-size:14px}
-.num{font-variant-numeric:tabular-nums}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 104px}
+.wrap{max-width:1180px;margin:0 auto}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+header.top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;padding-block:20px 10px}
+.brand{margin:0;white-space:nowrap;font:600 17px/1.2 var(--f-num);letter-spacing:.01em;display:flex;align-items:center;gap:10px}
+.brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand1),var(--brand2));display:grid;place-items:center;color:var(--brand-ink)}
+.brand i svg{width:16px;height:16px}
+.tagline{margin:0 0 0 auto;color:var(--muted);font-size:13px}
+@media (max-width:620px){.brand{flex:1}.theme{order:2}.tagline{order:3;flex-basis:100%;margin:0}}
+.theme{display:flex;gap:2px;background:var(--surface);border:1px solid var(--rule);border-radius:999px;padding:3px}
+.theme button{appearance:none;border:0;background:none;color:var(--muted);width:32px;height:28px;border-radius:999px;display:grid;place-items:center;cursor:pointer}
+.theme button svg{width:16px;height:16px}
+.theme button[aria-pressed="true"]{background:var(--surface2);color:var(--ink)}
+.theme button:focus-visible{outline:2px solid var(--s5);outline-offset:2px}
 
-/* タブ */
-nav.tabs{display:flex;gap:4px;margin:12px 0 16px;border-bottom:1px solid var(--rule-strong)}
-nav.tabs button{appearance:none;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
-nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--s5)}
-nav.tabs button:focus-visible{outline:2px solid var(--s5);outline-offset:2px}
-nav.tabs .ico{display:none}
+/* タブ：上に細い線、スマホは下に固定 */
+nav.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--rule);border-radius:999px;padding:4px;width:max-content;max-width:100%;margin:6px 0 18px}
+nav.tabs button{appearance:none;border:0;background:none;color:var(--muted);font:500 14px var(--f-body);padding:8px 16px;border-radius:999px;cursor:pointer;display:flex;gap:6px;align-items:center}
+nav.tabs button[aria-selected="true"]{background:var(--surface2);color:var(--ink)}
+nav.tabs .ico{width:18px;height:18px;display:none}
 @media (max-width:760px){
-  nav.tabs{position:fixed;left:0;right:0;bottom:0;margin:0;z-index:20;background:var(--tabbar);border:0;
-    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-  nav.tabs button{flex:1;color:var(--tabbar-ink);opacity:.62;border:0;padding:6px 4px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;margin:0}
-  nav.tabs button[aria-selected="true"]{opacity:1;color:var(--tabbar-ink);background:rgba(255,255,255,.08);border-radius:8px}
-  nav.tabs .ico{display:block;width:22px;height:22px}
-  .brand{font-size:24px}
+  nav.tabs{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;margin:0;z-index:20;justify-content:space-between;
+    background:var(--navbg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow)}
+  nav.tabs button{flex:1;flex-direction:column;gap:1px;font-size:11px;padding:6px 2px}
+  nav.tabs .ico{display:block}
 }
+section.tab{display:none} section.tab.on{display:block}
 
-section.tab{display:none}
-section.tab.on{display:block}
-.grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:20px;align-items:start}
-@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.grid .controls{order:2}}
-.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px}
-h2{font-size:17px;margin:0 0 10px;font-weight:700;text-wrap:balance}
-h3{font-size:15px;margin:0 0 6px}
-.hint{color:var(--muted);font-size:13px;margin:4px 0 0}
-p{margin:0 0 8px}
+/* 積立のタブ */
+.dash{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start}
+@media (max-width:960px){.dash{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:18px;box-shadow:var(--card-shadow)}
+.goalsel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:16px;max-width:420px}
+.goalsel button{appearance:none;font:600 15px/1.25 var(--f-num);color:var(--muted);background:transparent;border:1px solid var(--rule-strong);border-radius:14px;padding:7px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center}
+.goalsel button small{font:500 10px var(--f-body);opacity:.8}
+.goalsel button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.goalsel button:disabled{opacity:.35;cursor:not-allowed}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));text-align:center}
+.kpi{padding:2px 8px;border-left:1px solid var(--rule-strong)}
+.kpi:first-child{border-left:0}
+.kpi .v{display:block;font-size:clamp(20px,4.4vw,30px);font-weight:600;line-height:1.2;white-space:nowrap}
+.kpi .l{display:block;font-size:12px;color:var(--muted);margin-top:4px;white-space:nowrap}
+@media (max-width:420px){.kpi{padding:2px 4px}.kpi .l{font-size:11px;letter-spacing:-.02em}}
+.kpi.a .v{color:var(--s5)} .kpi.b .v{color:var(--s3)}
+.kpimeta{margin:12px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.kpimeta b{color:var(--ink);font-weight:500}
+.chartcard{margin-top:16px}
+.chartcard h2{font-size:14px;font-weight:500;color:var(--muted);margin:0 0 6px}
+#chart{width:100%;height:380px;display:block;touch-action:pan-y}
+@media (max-width:620px){#chart{height:300px}}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-top:8px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend b{font-weight:400}
+.note-strip{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 0}
+.side h2{font-size:17px;font-weight:500;margin:0 0 4px}
+.side .sub{font-size:12px;color:var(--muted);margin:0 0 6px}
+@media (min-width:961px){.side{position:sticky;top:16px}}
 
-/* スライダー */
-.ctl{display:grid;gap:4px;padding-block:12px;border-bottom:1px dashed var(--rule)}
-.ctl:last-child{border-bottom:0}
-.ctl .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.ctl label{font-weight:700;font-size:14px}
-.ctl .val{font-weight:700;font-size:18px;color:var(--ink)}
-.ctl .bar{display:flex;align-items:center;gap:10px}
-.ctl input[type=range]{flex:1;min-width:0;accent-color:var(--s5);height:28px}
-.ctl input[type=number]{width:118px;font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:6px 8px;border:1px solid var(--rule-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
-.ctl input:focus-visible{outline:2px solid var(--s5);outline-offset:1px}
+/* 入力：参考画像のように、左に線、右に数字の箱 */
+.ctl{padding-block:12px 10px}
+.ctl .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.ctl label{font-size:14px;color:var(--label)}
+.ctl .val{display:none}
+.ctl .bar{display:flex;align-items:center;gap:14px}
+.ctl input[type=range]{flex:1;min-width:0;appearance:none;-webkit-appearance:none;height:28px;background:transparent;cursor:pointer}
+.ctl input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--ink) var(--p,0%),var(--track) var(--p,0%))}
+.ctl input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--track)}
+.ctl input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--ink)}
+.ctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:30px;margin-top:-13px;border-radius:11px;background:var(--bg);border:3px solid var(--ink)}
+.ctl input[type=range]::-moz-range-thumb{width:16px;height:24px;border-radius:10px;background:var(--bg);border:3px solid var(--ink)}
+.ctl input[type=number]{width:118px;flex:none;font:500 15px var(--f-num);text-align:right;padding:8px 12px;border:1px solid var(--rule-strong);border-radius:12px;background:var(--bg);color:var(--ink)}
+.ctl input:focus-visible,.goalsel button:focus-visible,nav.tabs button:focus-visible{outline:2px solid var(--s5);outline-offset:2px}
+.ctl .hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+details.more{margin-top:6px;border-top:1px solid var(--rule);padding-top:6px}
+details.more summary{cursor:pointer;color:var(--muted);font-size:13px;padding-block:6px}
+
+/* ほかのタブ（税金・NISA・保存） */
+.grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:18px;box-shadow:var(--card-shadow)}
+h2{font-size:16px;font-weight:500;margin:0 0 10px} h3{font-size:14px;font-weight:500;margin:0 0 6px;color:var(--label)}
+p{margin:0 0 8px} .hint{color:var(--muted);font-size:12px;margin:4px 0 0}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
-.seg label{display:flex;align-items:center;gap:6px;border:1px solid var(--rule-strong);border-radius:999px;padding:4px 12px;cursor:pointer;font-weight:400;font-size:14px}
+.seg label{display:flex;align-items:center;gap:6px;border:1px solid var(--rule-strong);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px}
 .seg input{accent-color:var(--s5)}
-details.more{margin-top:8px}
-details.more summary{cursor:pointer;color:var(--muted);font-size:14px;padding-block:6px}
-
-/* ゴールの日の残高（通帳の行） */
-.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-@media (max-width:620px){.goals{grid-template-columns:minmax(0,1fr)}}
-.goal{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px}
-.goal dt,.goal dd{border-bottom:1px solid var(--rule)}
-/* スマホ：ゴールは小さな表にして、上に貼りつける（スライダーを動かしながら見られる） */
-.mini{display:none}
-@media (max-width:620px){
-  .goals,.goals-h{display:none}
-  .chartbox{margin-top:12px}
-  .mini{margin-bottom:0;display:block;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:6px 10px;box-shadow:0 6px 14px -10px rgba(0,0,0,.35)}
-  .mini table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-  .mini th,.mini td{padding:4px 2px;text-align:right;white-space:nowrap;font-size:14px;border-bottom:1px solid var(--rule)}
-  .mini tr:last-child td{border-bottom:0}
-  .mini th{font-size:11px;color:var(--muted);font-weight:700}
-  .mini th:first-child,.mini td:first-child{text-align:left}
-  .mini td.a{color:var(--s5);font-weight:700;font-size:15px}
-  .mini td.b{color:var(--s3);font-weight:700}
-  .mini td.age{font-family:var(--f-display);font-weight:800;font-size:16px}
-  .mini .na{color:var(--muted);font-size:12px;text-align:left}
-  .mini .sub{font-size:11px;color:var(--muted);margin:2px 0 0;line-height:1.5}
-  .ledger th,.ledger td{padding:7px 4px;font-size:13px}
-  .ledger tbody td:first-child{white-space:nowrap}
-}
-.goal .age{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.goal .age b{font-family:var(--f-display);font-size:24px;font-weight:800}
-.goal .age span{font-size:12px;color:var(--muted)}
-.goal dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;column-gap:10px}
-.goal dt{font-size:13px;color:var(--muted);line-height:32px;display:flex;align-items:center;gap:6px}
-.goal dd{margin:0;text-align:right;line-height:32px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.goal dd.big{font-size:22px;font-weight:700;color:var(--s5)}
-.goal dd.mid{font-size:17px;font-weight:700;color:var(--s3)}
-.goal dd.base{color:var(--ink)}
-.goal .na{color:var(--muted);font-size:14px;line-height:32px;margin-top:6px}
-.goal .sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5}
-.sw{display:inline-block;width:10px;height:10px;border-radius:2px}
-.sw.s5{background:var(--s5)}.sw.s3{background:var(--s3)}.sw.s0{background:var(--s0)}
-
-.chartbox{margin-top:16px}
-.chartbox canvas{width:100%;height:340px;display:block;touch-action:pan-y}
-@media (max-width:620px){.chartbox canvas{height:280px}}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:6px}
-.legend span{display:flex;align-items:center;gap:6px}
-.legend i{display:inline-block;width:18px;height:3px;border-radius:2px}
-.legend i.dash{background:repeating-linear-gradient(90deg,var(--s0) 0 4px,transparent 4px 7px)}
-.note-strip{margin-top:12px;font-size:13px;color:var(--muted)}
-
-/* 税金の表 */
-.ledger{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.ledger th,.ledger td{padding:8px 6px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
-.ledger th:first-child,.ledger td:first-child{text-align:left;white-space:normal}
-.ledger thead th{font-size:12px;color:var(--muted);font-weight:700}
-.ledger tr.total td{font-weight:700;border-top:2px solid var(--rule-strong)}
-.ledger td.plus{color:var(--warn)}
+.ledger{width:100%;border-collapse:collapse;font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.ledger th,.ledger td{padding:9px 6px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap;font-size:14px}
+.ledger th:first-child,.ledger td:first-child{text-align:left;font-family:var(--f-body)}
+.ledger thead th{font-size:12px;color:var(--muted);font-weight:500}
+.ledger tr.total td{font-weight:600;color:var(--good);border-bottom:0}
+.ledger td.plus{color:var(--s0)}
 .scrollx{overflow-x:auto}
-.callout{border:1px solid var(--rule-strong);border-radius:var(--r);padding:14px;background:var(--surface);margin-top:14px}
-.callout .big{font-size:24px;font-weight:700;color:var(--good)}
-.btn{appearance:none;font:inherit;font-weight:700;border:0;border-radius:999px;padding:10px 18px;background:var(--s5);color:var(--surface);cursor:pointer}
-.btn.ghost{background:transparent;color:var(--s5);border:1.5px solid var(--s5)}
-.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-.qa{margin-top:14px}
-.qa details{border-top:1px solid var(--rule);padding-block:8px}
-.qa summary{cursor:pointer;font-weight:700;font-size:14px}
-.qa p{font-size:14px;margin-top:6px}
-.tag{display:inline-block;font-size:12px;border-radius:999px;padding:1px 10px;border:1px solid currentColor}
-.tag.good{color:var(--good)}.tag.warn{color:var(--warn)}
-
-/* NISA：判子（はんこ） */
+@media (max-width:620px){.ledger th,.ledger td{padding:8px 3px;font-size:13px}}
+.callout{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:18px;margin-top:16px}
+.callout .big{font:600 30px var(--f-num);color:var(--good)}
+.btn{appearance:none;font:600 14px var(--f-body);border:0;border-radius:999px;padding:11px 20px;background:var(--ink);color:var(--bg);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--rule-strong)}
+.btn:disabled{opacity:.4}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.qa{margin-top:16px} .qa details{border-top:1px solid var(--rule);padding-block:10px} .qa summary{cursor:pointer;font-size:14px} .qa p{font-size:13px;color:var(--label);margin-top:6px}
+.tag{display:inline-block;font-size:11px;border-radius:999px;padding:1px 10px;border:1px solid currentColor}
+.tag.good{color:var(--good)} .tag.warn{color:var(--warn)}
 .nisa-rows{display:grid;gap:12px}
-.nrow{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center}
-.nrow h3{margin:0}
-.meter{grid-column:1 / -1;height:12px;border-radius:6px;background:var(--rule);overflow:hidden;position:relative}
-.meter i{position:absolute;left:0;top:0;bottom:0;background:var(--s5);border-radius:6px}
-.meter i.over{background:var(--shu)}
-.stamp{width:74px;height:74px;border-radius:50%;border:2.5px solid var(--shu);color:var(--shu);display:grid;place-items:center;
-  font-family:var(--f-display);font-weight:800;font-size:15px;line-height:1.15;text-align:center;transform:rotate(-9deg);opacity:.92}
-.stamp small{display:block;font-size:10px;letter-spacing:.1em}
-.stamp.off{border-color:var(--muted);color:var(--muted)}
-.nrow .detail{grid-column:1 / -1;font-size:13px;color:var(--muted)}
-
-/* 保存 */
-.preview{margin-top:14px;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:10px;text-align:center}
-.preview img{max-width:100%;height:auto;max-height:520px;border:1px solid var(--rule)}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
+.nrow{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center}
+.nrow h3{margin:0;color:var(--ink)} .nrow h3 .num{font-weight:600}
+.meter{grid-column:1 / -1;height:8px;border-radius:8px;background:var(--surface2);overflow:hidden;position:relative}
+.meter i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--brand1),var(--brand2));border-radius:8px}
+.meter i.over{background:var(--s0)}
+.stamp{min-width:62px;height:30px;padding:0 12px;border-radius:999px;background:var(--good-bg);color:var(--good);display:grid;place-items:center;font-size:12px;font-weight:700;white-space:nowrap}
+.stamp br{display:none} .stamp small{display:none}
+.stamp.off{background:var(--bad-bg);color:var(--s0)}
+.nrow .detail{grid-column:1 / -1;font-size:12px;color:var(--muted)}
+.preview{margin-top:14px;border:1px solid var(--rule);border-radius:16px;padding:10px;text-align:center}
+.preview img{max-width:100%;height:auto;max-height:520px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
-@media (min-width:761px){.toast{bottom:24px}}
-
-footer.legal{margin-top:28px;font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
-footer.legal a{color:var(--muted)}
-footer.legal ul{padding-left:18px;margin:6px 0}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+footer.legal{margin-top:28px;font-size:11px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 0}
 </style>
+<script>try{var t=localStorage.getItem("tsumitate-goal-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 
 <div class="wrap">
 <header class="top">
-  <h1 class="brand">Tsumitate Goal</h1>
-  <p class="tagline">何歳から積み立てると、60歳・65歳・70歳の日にいくら？</p>
+  <h1 class="brand"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 18l5-6 4 3 7-9"/></svg></i>Tsumitate Goal</h1>
+  <p class="tagline">60・65・70歳の日にいくら？</p>
+  <div class="theme" role="group" aria-label="画面の明るさ">
+      <button data-theme-set="auto" title="スマホ・パソコンの設定に合わせる" aria-label="自動"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></button>
+      <button data-theme-set="light" title="明るい画面" aria-label="明るい画面"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button data-theme-set="dark" title="暗い画面" aria-label="暗い画面"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+    </div>
 </header>
-
 <nav class="tabs" role="tablist" aria-label="切りかえ">
-  <button role="tab" id="t-sim" aria-selected="true" data-tab="sim"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M5 16l5-5 4 3 6-7"/></svg>積立</button>
-  <button role="tab" id="t-tax" aria-selected="false" data-tab="tax"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>副業と税金</button>
-  <button role="tab" id="t-nisa" aria-selected="false" data-tab="nisa"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M9 12l2 2 4-4"/></svg>NISA</button>
-  <button role="tab" id="t-save" aria-selected="false" data-tab="save"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>保存</button>
+  <button role="tab" aria-selected="true" data-tab="sim"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M5 16l5-5 4 3 6-7"/></svg>積立</button>
+  <button role="tab" aria-selected="false" data-tab="tax"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>副業と税金</button>
+  <button role="tab" aria-selected="false" data-tab="nisa"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M9 12l2 2 4-4"/></svg>NISA</button>
+  <button role="tab" aria-selected="false" data-tab="save"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>保存</button>
 </nav>
 
-<!-- 積立 -->
-<section class="tab on" id="tab-sim" role="tabpanel" aria-labelledby="t-sim">
-  <div class="mini" id="mini" aria-label="ゴールの日の残高"></div>
-  <div class="grid">
-    <div class="controls panel">
-      <h2>条件をえらぶ</h2>
-      <div id="ctl-sim"></div>
-      <details class="more"><summary>くわしい設定（やめる年齢・物価）</summary><div id="ctl-sim-more"></div></details>
-    </div>
+<section class="tab on" id="tab-sim" role="tabpanel">
+  <div class="dash">
     <div>
-      <h2 class="goals-h">ゴールの日の残高</h2>
-      <div class="goals" id="goals"></div>
-      <div class="panel chartbox">
+      <div class="card">
+        <div class="goalsel" role="group" aria-label="ゴールの年齢">
+          <button data-goal="60">60歳<small>定年</small></button><button data-goal="65">65歳<small>雇用確保</small></button><button data-goal="70">70歳<small>就業確保</small></button>
+        </div>
+        <div class="kpis" id="kpis"></div>
+        <p class="kpimeta" id="kpimeta"></p>
+      </div>
+      <div class="card chartcard">
+        <h2>資産の合計</h2>
         <canvas id="chart" aria-label="年齢ごとの資産の線の図"></canvas>
         <div class="legend">
           <span><i style="background:var(--s5)"></i><b id="lg5">利回り5%</b></span>
           <span><i style="background:var(--s3)"></i><b id="lg3">利回り3%</b></span>
-          <span><i class="dash"></i>元本（貯金と同じ・利息なし）</span>
+          <span><i style="background:var(--s0)"></i>元本（利息なし）</span>
         </div>
-        <p class="note-strip" id="chartNote">図をさわると、その年齢の金額が出ます。</p>
+        <p class="note-strip" id="chartNote"></p>
       </div>
     </div>
+    <aside class="card side">
+      <h2>条件を変えて試算</h2>
+      <p class="sub">線を動かすか、右の箱に数字を入れてください。</p>
+      <div id="ctl-sim"></div>
+      <details class="more"><summary>くわしい設定（やめる年齢・物価）</summary><div id="ctl-sim-more"></div></details>
+    </aside>
   </div>
 </section>
-
 <!-- 税金 -->
 <section class="tab" id="tab-tax" role="tabpanel" aria-labelledby="t-tax">
   <div class="grid">
@@ -275,8 +275,43 @@ footer.legal ul{padding-left:18px;margin:6px 0}
     <li>参考：<a href="https://www.fsa.go.jp/policy/nisa2/" target="_blank" rel="noopener">金融庁 NISA特設ウェブサイト</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm" target="_blank" rel="noopener">国税庁 給与所得控除</a>／<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/jigyounushi/page09_00001.html" target="_blank" rel="noopener">厚生労働省 高年齢者の雇用</a></li>
   </ul>
 </footer>
+
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* 画面の明るさ：自動（スマホ・パソコンの設定）／明るい／暗い。選んだものはこの端末に覚えておく */
+(function(){
+  const KEY = "tsumitate-goal-theme", root = document.documentElement;
+  let mode = "auto"; try { mode = localStorage.getItem(KEY) || "auto"; } catch(e) {}
+  const apply = m => {
+    mode = m;
+    if (m === "auto") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", m);
+    document.querySelectorAll("[data-theme-set]").forEach(b => b.setAttribute("aria-pressed", b.dataset.themeSet === m ? "true" : "false"));
+  };
+  apply(mode);
+  document.querySelectorAll("[data-theme-set]").forEach(b => b.addEventListener("click", () => {
+    apply(b.dataset.themeSet); try { localStorage.setItem(KEY, mode); } catch(e) {}
+  }));
+  /* 色が変わったら図を描きなおす（claude.ai の画面の切りかえにも合わせる） */
+  new MutationObserver(() => { if (typeof paintChart === "function") requestAnimationFrame(paintChart); }).observe(root, {attributes:true, attributeFilter:["data-theme"]});
+})();
+window.UI = {
+  storeKey: "tsumitate-goal-v1",
+  chartFont: '"Inter","Noto Sans JP",sans-serif',
+  chart: {lw: 2.6, costSolid: true},
+  /* 保存の画像・PDF は、印刷やLINEで見やすいように、いつも明るい画面の色で作る */
+  exportCol: {ink:"#151a24", muted:"#5d6676", rule:"#e2e6ee", s5:"#2f6fd6", s3:"#c47a10", s0:"#d4574c", shu:"#5b6476", fill:"rgba(47,111,214,.20)", fillEnd:"rgba(47,111,214,.02)", surface:"#ffffff", card:"#ffffff", goalInk:"#ffffff", tipInk:"#151a24"},
+  exportStyle: {bg:"#f4f6fa", font:'"Inter","Noto Sans JP","Hiragino Sans",sans-serif', title:'"Inter","Noto Sans JP","Hiragino Sans",sans-serif', cards:true, rule:"#e2e6ee"},
+  sim(v){
+    const k = document.getElementById("kpis"), m = document.getElementById("kpimeta"), c = v.cur;
+    if (!c){ k.innerHTML = `<div class="kpi" style="grid-column:1/-1"><span class="l">始める年齢が70歳なので、ゴールがありません</span></div>`; m.textContent = ""; return; }
+    k.innerHTML = `<div class="kpi"><span class="v num">${fmtYen(c.cost)}</span><span class="l">積み立てた元本</span></div>
+      <div class="kpi a"><span class="v num">${fmtYen(c.a)}</span><span class="l">${v.rA}%・基準</span></div>
+      <div class="kpi b"><span class="v num">${fmtYen(c.b)}</span><span class="l">${v.rB}%・現実想定</span></div>`;
+    m.innerHTML = `<b>${S.startAge}歳</b>から<b>${c.yrs}年</b>・毎月<b>${manSen(S.monthly)}</b>　ふえた分 <b>+${fmtYen(c.gainA)}</b>${c.realA ? `　いまの価値で約${fmtYen(c.realA)}` : ""}`;
+  }
+};
+</script>
 
 <script>
 "use strict";
@@ -305,13 +340,20 @@ const CTL = {
   saveRatio:{label:"副業の手取りのうち積立に回す割合", min:0, max:100, step:5, v:50, fmt:v=>v+"%", box:"tax"}
 };
 let sideType = "kyuyo"; // kyuyo = バイト（給与）／zatsu = 業務委託など（雑所得）
+let selGoal = 65;       // いま大きく見せるゴールの年齢
+const UI = window.UI || {};
 const S = {}; for (const k in CTL) S[k] = CTL[k].v;
 
 // 前回の入力（この端末だけ）
-const STORE_KEY = "tsumitate-goal-v1";
+const STORE_KEY = UI.storeKey || "tsumitate-goal-v1";
 try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
-  if (saved) { for (const k in CTL) if (typeof saved[k] === "number") S[k] = clamp(saved[k], CTL[k].min, CTL[k].max); if (saved.sideType) sideType = saved.sideType; } } catch(e) {}
-function persist(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(Object.assign({sideType}, S))); } catch(e) {} }
+  if (saved) { for (const k in CTL) if (typeof saved[k] === "number") S[k] = clamp(saved[k], CTL[k].min, CTL[k].max); if (saved.sideType) sideType = saved.sideType; if (saved.selGoal) selGoal = saved.selGoal; } } catch(e) {}
+function persist(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(Object.assign({sideType, selGoal}, S))); } catch(e) {} }
+// 始める年齢より前のゴールは選べないので、次のゴールにずらす
+function goalAge(){ const ok = GOALS.filter(g => g.age > S.startAge); if (!ok.length) return null;
+  return (ok.find(g => g.age === selGoal) || ok.find(g => g.age > selGoal) || ok[ok.length-1]).age; }
+function setGoal(a){ selGoal = a; render(); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-goal]"); if (b) setGoal(+b.dataset.goal); });
 
 function clamp(v,a,b){ return Math.min(b, Math.max(a, v)); }
 function manSen(y){ y = Math.round(y);
@@ -333,12 +375,16 @@ function yen(y){ return Math.round(y).toLocaleString("ja-JP") + "円"; }
 
 function buildControls(){
   for (const k in CTL){ const c = CTL[k];
-    const host = document.getElementById("ctl-" + c.box);
-    const d = document.createElement("div"); d.className = "ctl";
-    d.innerHTML = `<div class="row"><label for="r-${k}">${c.label}</label><span class="val num" id="v-${k}"></span></div>
-      <div class="bar"><input type="range" id="r-${k}" min="${c.min}" max="${c.max}" step="${c.step}">
-      <input type="number" id="n-${k}" min="${c.min}" max="${c.max}" step="${c.step}" aria-label="${c.label}（数字で入れる）"></div>
-      ${c.hint?`<p class="hint">${c.hint}</p>`:""}`;
+    const label = (UI.labels && UI.labels[k]) || c.label;
+    const host = document.getElementById("ctl-" + ((UI.boxes && UI.boxes[k]) || c.box));
+    const d = document.createElement("div"); d.className = "ctl"; d.dataset.k = k;
+    const big = c.step >= 1000 ? 10 : c.step < 1 ? 5 : 1; // ＋−ボタン1回で動く量（お金は1万円、年齢や%は1目盛り）
+    const stepBtn = (s, t) => UI.steppers ? `<button type="button" class="stp" data-k="${k}" data-d="${s}" aria-label="${label}を${t}">${s > 0 ? "＋" : "−"}</button>` : "";
+    d.innerHTML = `<div class="row"><label for="r-${k}">${label}</label><span class="val num" id="v-${k}"></span></div>
+      <div class="bar">${stepBtn(-big, "へらす")}<input type="range" id="r-${k}" min="${c.min}" max="${c.max}" step="${c.step}">${stepBtn(big, "ふやす")}
+      <input type="number" id="n-${k}" min="${c.min}" max="${c.max}" step="${c.step}" inputmode="decimal" aria-label="${label}（数字で入れる）"></div>
+      ${c.hint && !UI.noHints ? `<p class="hint">${c.hint}</p>` : ""}`;
+    d.querySelectorAll(".stp").forEach(b => b.addEventListener("click", () => setVal(k, S[k] + (+b.dataset.d) * c.step)));
     if (k === "sideIncome"){
       const seg = document.createElement("div"); seg.className = "ctl";
       seg.innerHTML = `<div class="row"><label>副業の種類</label></div>
@@ -369,6 +415,7 @@ function syncControls(){
     if (k === "stopAge") { r.min = n.min = Math.min(70, S.startAge + 1); }
     if (document.activeElement !== r) r.value = S[k];
     if (document.activeElement !== n) n.value = S[k];
+    r.style.setProperty("--p", ((S[k] - r.min) / (r.max - r.min) * 100) + "%"); // 線の色をつける長さ
     let label = c.fmt(S[k]);
     if (k === "sideIncome") label = (sideType === "kyuyo" ? "" : "所得 ") + label;
     document.getElementById("v-"+k).textContent = label; }
@@ -444,20 +491,21 @@ function calcTax(main, side, type, siRate){
 const cv = document.getElementById("chart");
 let hoverAge = null, last = null;
 function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-function themeColors(){ return {ink:cssVar("--ink"), muted:cssVar("--muted"), rule:cssVar("--rule"), s5:cssVar("--s5"), s3:cssVar("--s3"), s0:cssVar("--s0"), shu:cssVar("--shu"), fill:cssVar("--fill5"), surface:cssVar("--surface")}; }
+function themeColors(){ const g = (n, f) => cssVar(n) || cssVar(f);
+  return {ink:cssVar("--ink"), muted:g("--axis","--muted"), rule:g("--grid","--rule"), s5:cssVar("--s5"), s3:cssVar("--s3"), s0:cssVar("--s0"), shu:g("--goal","--shu"), fill:cssVar("--fill5"), fillEnd:g("--fill-end","--fill5"), surface:g("--tip","--surface"), tipInk:g("--tip-ink","--ink"), card:g("--card","--surface"), goalInk:g("--goal-ink","--surface")}; }
 function niceStep(max){ const raw = max/5, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw/p;
   return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
 function yLabel(v){ if (v >= 100000000) return (v/100000000).toFixed(v%100000000?1:0) + "億"; return (v/10000).toLocaleString("ja-JP") + "万"; }
+// 線の図。ゴールの年齢は下の目盛りに色をつけて出す（上に文字を並べると重なるため）
 function drawChart(ctx, W, H, col, data, opts){
-  const font = opts.font || '"BIZ UDPGothic","Hiragino Sans",sans-serif', fs = opts.fs || 12;
+  const font = opts.font || UI.chartFont || '"BIZ UDPGothic","Hiragino Sans",sans-serif', fs = opts.fs || 12;
   const n = data.n, xMax = LAST_AGE, xMin = n;
   const ymaxRaw = Math.max(1, ...data.a.map(p=>p.value), ...data.b.map(p=>p.value));
   const step = niceStep(ymaxRaw), ymax = Math.ceil(ymaxRaw/step)*step;
-  // 左の目盛りの文字の幅をはかって、切れないように余白を決める
   ctx.font = `${fs}px ${font}`;
   let labW = 0; for (let v = step; v <= ymax + 1; v += step) labW = Math.max(labW, ctx.measureText(yLabel(v)).width);
-  const L = Math.max(opts.padL || 40, Math.ceil(labW) + 14), R = 14, T = 16, B = 34;
-  if (opts.onLayout) opts.onLayout(L);
+  const L = Math.max(opts.padL || 36, Math.ceil(labW) + 12), R = opts.padR || 12, T = opts.padT || 14, B = Math.round(fs * 2.6);
+  if (opts.onLayout) opts.onLayout(L, R);
   const w = W - L - R, h = H - T - B;
   const X = a => L + (xMax === xMin ? 0 : (a - xMin)/(xMax - xMin)) * w;
   const Y = v => T + h - v/ymax*h;
@@ -470,52 +518,72 @@ function drawChart(ctx, W, H, col, data, opts){
     ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + w, y); ctx.stroke();
     ctx.fillStyle = col.muted; ctx.textAlign = "right"; ctx.fillText(v ? yLabel(v) : "0", L - 8, y); }
   ctx.setLineDash([]);
-  // 年齢の目盛り
-  const span = xMax - xMin, xs = span > 30 ? 10 : span > 12 ? 5 : span > 5 ? 2 : 1;
-  ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillStyle = col.muted;
-  const ticks = new Set([xMin, xMax]); for (let a = Math.ceil(xMin/xs)*xs; a <= xMax; a += xs) ticks.add(a);
-  [...ticks].sort((p,q)=>p-q).forEach((a, idx, arr) => { if (idx > 0 && X(a) - X(arr[idx-1]) < fs*2.4 && a !== xMax) return; ctx.fillText(a + "歳", X(a), T + h + 8); });
-  // ゴールの縦線
-  GOALS.forEach((g, gi) => { if (g.age <= xMin) return; const x = Math.round(X(g.age)) + .5;
-    const ly = T + 2 + (gi === 1 ? fs + 4 : 0); // 65歳だけ1段下げて、となりの文字と重ならないようにする
-    ctx.strokeStyle = col.shu; ctx.globalAlpha = .55; ctx.setLineDash([2,3]); ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + h); ctx.stroke(); ctx.globalAlpha = 1; ctx.setLineDash([]);
-    ctx.fillStyle = col.shu; ctx.textAlign = g.age === xMax ? "right" : "center"; ctx.textBaseline = "top";
-    ctx.font = `bold ${fs-1}px ${font}`; ctx.fillText(g.age + "歳", g.age === xMax ? x - 3 : x, ly); ctx.font = `${fs}px ${font}`; });
+  // ゴールの縦線（選んでいるゴールは濃く）
+  const goals = GOALS.map(g => g.age).filter(a => a > xMin), sel = opts.sel;
+  goals.forEach(a => { const x = Math.round(X(a)) + .5;
+    ctx.strokeStyle = col.shu; ctx.globalAlpha = a === sel ? .9 : .35; ctx.lineWidth = a === sel ? 1.5 : 1; ctx.setLineDash(a === sel ? [] : [2,3]);
+    ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + h); ctx.stroke(); ctx.globalAlpha = 1; ctx.setLineDash([]); ctx.lineWidth = 1; });
+  // 下の目盛り：始めの年齢とゴールの年齢だけ（間がせまいときは文字を小さく）
+  ctx.textBaseline = "top";
+  // 重ならないように、選んでいるゴール → 始めの年齢 → ほかのゴール の順に置く。入らないときは「歳」を省き、それでも入らなければ出さない
+  const labels = [{a:xMin, goal:false}].concat(goals.map(a => ({a, goal:true})));
+  const order = labels.slice().sort((p, q) => (q.a === sel) - (p.a === sel) || (p.a === xMin ? -1 : q.a === xMin ? 1 : 0));
+  const placed = [];
+  order.forEach(t => {
+    const isSel = t.goal && t.a === sel, pad = isSel ? 5 : 0;
+    ctx.font = `${t.goal ? "bold " : ""}${fs}px ${font}`;
+    for (const txt of [t.a + "歳", String(t.a)]){
+      const tw = ctx.measureText(txt).width + pad * 2, x = X(t.a);
+      let x0 = t.a === xMin ? L - pad : t.a === xMax ? L + w - tw + pad : x - tw/2;
+      x0 = clamp(x0, 0, W - tw);
+      if (placed.some(p => x0 < p[1] + 4 && x0 + tw > p[0] - 4)) continue;
+      placed.push([x0, x0 + tw]);
+      if (isSel){ ctx.fillStyle = col.shu; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x0, T + h + 5, tw, fs + 8, 6) : ctx.rect(x0, T + h + 5, tw, fs + 8); ctx.fill(); }
+      ctx.fillStyle = isSel ? (opts.bg || col.goalInk || col.surface) : t.goal ? col.shu : col.muted;
+      ctx.textAlign = "left"; ctx.fillText(txt, x0 + pad, T + h + 9);
+      break; } });
+  ctx.font = `${fs}px ${font}`;
   // NISA の生涯枠（元本）
-  if (NISA_LIFE < ymax){ const y = Math.round(Y(NISA_LIFE)) + .5; ctx.strokeStyle = col.s0; ctx.setLineDash([8,4]); ctx.globalAlpha = .7;
+  if (NISA_LIFE < ymax && opts.nisaLine !== false){ const y = Math.round(Y(NISA_LIFE)) + .5; ctx.strokeStyle = col.s0; ctx.setLineDash([8,4]); ctx.globalAlpha = .55;
     ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + w, y); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
-    ctx.fillStyle = col.muted; ctx.textAlign = "left"; ctx.textBaseline = "bottom"; ctx.fillText("NISAの生涯枠 1,800万（元本）", L + 6, y - 3); }
+    ctx.fillStyle = col.muted; ctx.textAlign = "left"; ctx.textBaseline = "bottom"; ctx.font = `${fs - 1}px ${font}`; ctx.fillText("NISAの生涯枠 1,800万（元本）", L + 6, y - 3); ctx.font = `${fs}px ${font}`; }
   // 面と線
   const path = (arr, key) => { ctx.beginPath(); arr.forEach((p, k) => { const x = X(p.age), y = Y(p[key]); k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); };
-  path(data.a, "value"); ctx.lineTo(X(xMax), Y(0)); ctx.lineTo(X(xMin), Y(0)); ctx.closePath(); ctx.fillStyle = col.fill; ctx.fill();
+  path(data.a, "value"); ctx.lineTo(X(xMax), Y(0)); ctx.lineTo(X(xMin), Y(0)); ctx.closePath();
+  if (opts.gradient !== false){ const gr = ctx.createLinearGradient(0, T, 0, T + h); gr.addColorStop(0, col.fill); gr.addColorStop(1, col.fillEnd); ctx.fillStyle = gr; } else ctx.fillStyle = col.fill;
+  ctx.fill();
   ctx.lineJoin = "round"; ctx.lineCap = "round";
-  path(data.a, "cost"); ctx.strokeStyle = col.s0; ctx.lineWidth = 2; ctx.setLineDash([6,5]); ctx.stroke(); ctx.setLineDash([]);
-  path(data.b, "value"); ctx.strokeStyle = col.s3; ctx.lineWidth = 2.5; ctx.stroke();
-  path(data.a, "value"); ctx.strokeStyle = col.s5; ctx.lineWidth = 3; ctx.stroke();
-  // 終わりの点
-  [[data.a, col.s5], [data.b, col.s3]].forEach(([arr, c]) => { const p = arr[arr.length-1]; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(X(p.age), Y(p.value), 4, 0, 7); ctx.fill(); });
+  const lw = opts.lw || 3;
+  path(data.a, "cost"); ctx.strokeStyle = col.s0; ctx.lineWidth = Math.max(1.5, lw - 1); ctx.setLineDash(opts.costSolid ? [] : [6,5]); ctx.stroke(); ctx.setLineDash([]);
+  path(data.b, "value"); ctx.strokeStyle = col.s3; ctx.lineWidth = lw - .5; ctx.stroke();
+  path(data.a, "value"); ctx.strokeStyle = col.s5; ctx.lineWidth = lw; ctx.stroke();
+  // 選んでいるゴールの点
+  if (sel && sel > xMin && opts.hover == null){ const m = Math.round((sel - xMin) * 12), x = X(sel);
+    [[data.a[m].value, col.s5], [data.b[m].value, col.s3], [data.a[m].cost, col.s0]].forEach(([v, c]) => {
+      ctx.fillStyle = opts.bg || col.card || col.surface; ctx.beginPath(); ctx.arc(x, Y(v), lw + 3, 0, 7); ctx.fill();
+      ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, Y(v), lw + 1, 0, 7); ctx.fill(); }); }
   // さわった年齢
   if (opts.hover != null){ const a = clamp(Math.round(opts.hover), xMin, xMax), m = Math.round((a - xMin)*12);
     const pa = data.a[m], pb = data.b[m]; const x = X(a);
     ctx.strokeStyle = col.ink; ctx.globalAlpha = .35; ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + h); ctx.stroke(); ctx.globalAlpha = 1;
     [[pa.value, col.s5], [pb.value, col.s3], [pa.cost, col.s0]].forEach(([v, c]) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, Y(v), 4.5, 0, 7); ctx.fill(); });
-    const lines = [[a + "歳のとき", col.ink], [data.la + "　" + fmtYen(pa.value), col.s5], [data.lb + "　" + fmtYen(pb.value), col.s3], ["元本　" + fmtYen(pa.cost), col.muted]];
+    const lines = [[a + "歳のとき", col.tipInk], [data.la + "　" + fmtYen(pa.value), col.s5], [data.lb + "　" + fmtYen(pb.value), col.s3], ["元本　" + fmtYen(pa.cost), col.muted]];
     ctx.font = `bold ${fs}px ${font}`; const bw = Math.max(...lines.map(l => ctx.measureText(l[0]).width)) + 20, bh = lines.length * (fs + 7) + 12;
-    let bx = x + 12; if (bx + bw > L + w) bx = x - 12 - bw; const by = T + 18;
-    ctx.fillStyle = col.surface; ctx.strokeStyle = col.rule; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 8) : ctx.rect(bx, by, bw, bh); ctx.fill(); ctx.stroke();
+    let bx = x + 12; if (bx + bw > L + w) bx = x - 12 - bw; if (bx < 2) bx = 2; const by = T + 8;
+    ctx.fillStyle = col.surface; ctx.strokeStyle = col.rule; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 10) : ctx.rect(bx, by, bw, bh); ctx.fill(); ctx.stroke();
     ctx.textAlign = "left"; ctx.textBaseline = "top"; lines.forEach((l, k) => { ctx.fillStyle = l[1]; ctx.fillText(l[0], bx + 10, by + 8 + k*(fs + 7)); });
   }
 }
 function paintChart(){
   if (!last) return;
   const dpr = window.devicePixelRatio || 1, r = cv.getBoundingClientRect();
-  if (!r.width) return;
+  if (!r.width || !r.height) return;
   cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
   const ctx = cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
-  drawChart(ctx, r.width, r.height, themeColors(), last.chartData, {hover: hoverAge, fs: r.width < 500 ? 11 : 12, padL: 40, onLayout: v => { chartL = v; }});
+  drawChart(ctx, r.width, r.height, themeColors(), last.chartData, Object.assign({hover: hoverAge, sel: goalAge(), fs: r.width < 500 ? 11 : 12, onLayout: (v, rr) => { chartL = v; chartR = rr; }}, UI.chart || {}));
 }
-let chartL = 58;
-function pointerAge(e){ const r = cv.getBoundingClientRect(), L = chartL, w = r.width - L - 14;
+let chartL = 58, chartR = 12;
+function pointerAge(e){ const r = cv.getBoundingClientRect(), L = chartL, w = r.width - L - chartR;
   return S.startAge + clamp((e.clientX - r.left - L)/w, 0, 1) * (LAST_AGE - S.startAge); }
 cv.addEventListener("pointermove", e => { hoverAge = pointerAge(e); paintChart(); });
 cv.addEventListener("pointerdown", e => { hoverAge = pointerAge(e); paintChart(); });
@@ -526,36 +594,19 @@ function render(){
   syncControls(); persist();
   const A = simulate(S.rateA), Bs = simulate(S.rateB);
   const la = "利回り" + S.rateA.toFixed(1) + "%", lb = "利回り" + S.rateB.toFixed(1) + "%";
-  document.getElementById("lg5").textContent = la + "（基準）"; document.getElementById("lg3").textContent = lb + "（現実想定）";
+  const lg5 = document.getElementById("lg5"), lg3 = document.getElementById("lg3");
+  if (lg5) lg5.textContent = la + "（基準）"; if (lg3) lg3.textContent = lb + "（現実想定）";
   last = {A, B:Bs, la, lb, chartData:{n:S.startAge, a:A.pts, b:Bs.pts, la, lb}};
-  // ゴールの日
-  const gHost = document.getElementById("goals"); gHost.innerHTML = "";
-  GOALS.forEach(g => {
-    const el = document.createElement("article"); el.className = "goal";
-    if (g.age <= S.startAge){ el.innerHTML = `<div class="age"><b>${g.age}歳</b><span>${g.title}</span></div><p class="na">始める年齢が${g.age}歳以上なので、このゴールはありません。</p>`; gHost.appendChild(el); return; }
+  // 画面ごとの見せ方に渡す数字（ゴールごと）
+  const goals = GOALS.map(g => { if (g.age <= S.startAge) return Object.assign({ok:false}, g);
     const pa = at(A, g.age), pb = at(Bs, g.age);
-    const yrs = g.age - S.startAge;
-    const taxNoteA = pa.tV > 0 ? `<div class="sub">NISAの外の分の税金を引くと ${fmtYen(afterTax(pa))}</div>` : "";
-    const realNote = S.infl > 0 ? `<div class="sub">いまのお金の価値だと 約${fmtYen(realValue(pa.value, g.age))}（物価${S.infl.toFixed(1)}%）</div>` : "";
-    el.innerHTML = `<div class="age"><b>${g.age}歳</b><span>${g.title}・${yrs}年後</span></div>
-      <dl><dt><i class="sw s5"></i>${S.rateA.toFixed(1)}%</dt><dd class="big num">${fmtYen(pa.value)}</dd>
-      <dt><i class="sw s3"></i>${S.rateB.toFixed(1)}%</dt><dd class="mid num">${fmtYen(pb.value)}</dd>
-      <dt><i class="sw s0"></i>元本</dt><dd class="base num">${fmtYen(pa.cost)}</dd></dl>
-      <div class="sub">${g.sub}</div>${taxNoteA}${realNote}`;
-    gHost.appendChild(el);
-  });
-  // スマホ用の小さな表
-  let mrows = "";
-  GOALS.forEach(g => {
-    if (g.age <= S.startAge){ mrows += `<tr><td class="age">${g.age}歳</td><td colspan="3" class="na">始める年齢より前なので対象外</td></tr>`; return; }
-    const pa = at(A, g.age), pb = at(Bs, g.age);
-    mrows += `<tr><td class="age">${g.age}歳</td><td class="a">${fmtYen(pa.value)}</td><td class="b">${fmtYen(pb.value)}</td><td>${fmtYen(pa.cost)}</td></tr>`; });
-  const g65 = GOALS.find(g => g.age > S.startAge);
-  let msub = "";
-  if (g65 && S.infl > 0) msub = `<p class="sub">${g65.age}歳の${S.rateA.toFixed(1)}%は、いまのお金の価値だと約${fmtYen(realValue(at(A, g65.age).value, g65.age))}（物価${S.infl.toFixed(1)}%）</p>`;
-  if (A.fullAt) msub += `<p class="sub">NISAの枠をこえた分は、売るときに税金がかかります（NISAのタブ）</p>`;
-  document.getElementById("mini").innerHTML = `<table><thead><tr><th>ゴール</th><th>${S.rateA.toFixed(1)}%</th><th>${S.rateB.toFixed(1)}%</th><th>元本</th></tr></thead><tbody>${mrows}</tbody></table>${msub}`;
-  document.getElementById("chartNote").textContent = `図をさわると、その年齢の金額が出ます。${S.stopAge < 70 ? S.stopAge + "歳で積立をやめ、そのあとは運用だけ続ける計算です。" : ""}`;
+    return Object.assign({ok:true, yrs:g.age - S.startAge, a:pa.value, b:pb.value, cost:pa.cost, gainA:pa.value - pa.cost, gainB:pb.value - pb.cost,
+      afterTaxA: pa.tV > 0 ? afterTax(pa) : null, realA: S.infl > 0 ? realValue(pa.value, g.age) : null}, g); });
+  const sel = goalAge();
+  document.querySelectorAll("[data-goal]").forEach(b => { const a = +b.dataset.goal; b.setAttribute("aria-pressed", a === sel ? "true" : "false"); b.disabled = a <= S.startAge; });
+  const note = document.getElementById("chartNote");
+  if (note) note.textContent = `図をさわると、その年齢の金額が出ます。${S.stopAge < 70 ? S.stopAge + "歳で積立をやめ、そのあとは運用だけ続ける計算です。" : ""}`;
+  if (UI.sim) UI.sim({goals, sel, cur: goals.find(g => g.age === sel) || null, rA:S.rateA.toFixed(1), rB:S.rateB.toFixed(1), A, B:Bs, la, lb});
   paintChart();
   renderTax(); renderNisa(A, Bs);
 }
@@ -630,9 +681,12 @@ document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("cl
 function exportCanvas(){
   const W = 1240, H = 1754, c = document.createElement("canvas"); c.width = W; c.height = H;
   const x = c.getContext("2d");
-  const col = {ink:"#1b2735", muted:"#5b6876", rule:"#d3dfdc", s5:"#1f5fa8", s3:"#b97a12", s0:"#7d8a97", shu:"#c63f2a", fill:"rgba(31,95,168,.10)", surface:"#ffffff"};
-  const F = '"BIZ UDPGothic","Hiragino Sans","Yu Gothic",sans-serif', FM = '"Shippori Mincho B1","Hiragino Mincho ProN",serif';
-  x.fillStyle = "#f3f6f5"; x.fillRect(0,0,W,H);
+  const col = Object.assign({ink:"#1b2735", muted:"#5b6876", rule:"#d3dfdc", s5:"#1f5fa8", s3:"#b97a12", s0:"#7d8a97", shu:"#c63f2a", fill:"rgba(31,95,168,.16)", fillEnd:"rgba(31,95,168,.02)", surface:"#ffffff", card:"#ffffff", goalInk:"#ffffff", tipInk:"#1b2735"}, UI.exportCol || {});
+  const ES = Object.assign({bg:"#f3f6f5", font:'"BIZ UDPGothic","Hiragino Sans","Yu Gothic",sans-serif', title:'"Shippori Mincho B1","Hiragino Mincho ProN",serif', cards:false, rule:null}, UI.exportStyle || {});
+  const F = ES.font, FM = ES.title;
+  x.fillStyle = ES.bg; x.fillRect(0,0,W,H);
+  const card = (cy, chh) => { if (!ES.cards) return; x.save(); x.fillStyle = col.card; x.strokeStyle = ES.rule || col.rule; x.lineWidth = 2; x.beginPath(); x.roundRect ? x.roundRect(40, cy, W - 80, chh, 28) : x.rect(40, cy, W - 80, chh); x.fill(); x.stroke(); x.restore(); };
+  card(236, 3 * 70 + 64);
   x.fillStyle = col.ink; x.textBaseline = "top"; x.textAlign = "left";
   x.font = `800 52px ${FM}`; x.fillText("Tsumitate Goal", 70, 60);
   x.font = `26px ${F}`; x.fillStyle = col.muted; x.fillText("何歳から積み立てると、60歳・65歳・70歳の日にいくら？", 70, 128);
@@ -655,7 +709,8 @@ function exportCanvas(){
     y += 70; });
   // 図
   y += 10; const ch = document.getElementById("incTax").checked ? 640 : 760;
-  x.save(); x.translate(50, y); drawChart(x, W - 100, ch, col, last.chartData, {fs: 22, padL: 110, bg: "#ffffff"}); x.restore();
+  card(y - 14, ch + 96);
+  x.save(); x.translate(50, y); drawChart(x, W - 100, ch, col, last.chartData, Object.assign({}, UI.chart || {}, {fs: 22, padL: 110, padT: 20, lw: 5, bg: "#ffffff", sel: goalAge()})); x.restore();
   y += ch + 20;
   x.font = `22px ${F}`; let lx = 70;
   [[col.s5, last.la + "（基準）"], [col.s3, last.lb + "（現実想定）"], [col.s0, "元本"]].forEach(([c, t]) => { x.fillStyle = c; x.fillRect(lx, y + 10, 30, 6); x.fillStyle = col.ink; x.fillText(t, lx + 40, y); lx += x.measureText(t).width + 90; });
@@ -741,6 +796,7 @@ window.addEventListener("resize", paintChart);
 if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", paintChart);
 new MutationObserver(paintChart).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(paintChart);
+
 </script>
 
 </body></html>
