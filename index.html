@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta property="og:type" content="website"><meta property="og:url" content="https://kurokishu.github.io/tsumitate-goal/"><meta property="og:title" content="Tsumitate Goal｜積立シミュレーター"><meta property="og:description" content="何歳から積み立てると60歳・65歳・70歳でいくらになるかを、利回り5%・3%と元本でくらべる無料のシミュレーター。副業の税金とNISAの生涯枠もわかります。"><meta property="og:image" content="https://kurokishu.github.io/tsumitate-goal/og.png"><meta name="twitter:card" content="summary_large_image">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Tsumitate Goal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="何歳から積み立てると、60歳・65歳・70歳でいくらになるかを、利回り5%・3%と元本でくらべる無料のシミュレーター。副業の税金とNISAの生涯枠もわかります。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho+B1:wght@700;800&display=swap">
+<style>
+/* レイアウト：通帳（つうちょう）の見開き。左に入力、右に「ゴールの日の残高」と線の図。スマホは下のタブで切りかえ */
+:root{
+  --paper:#f3f6f5; --surface:#ffffff; --ink:#1b2735; --muted:#5b6876; --rule:#d3dfdc; --rule-strong:#b7c8c4;
+  --s5:#1f5fa8; --s3:#b97a12; --s0:#7d8a97; --shu:#c63f2a; --good:#2c7a4b; --warn:#a85d14; --fill5:rgba(31,95,168,.10);
+  --tabbar:#1b2735; --tabbar-ink:#e9eff3;
+  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic","Meiryo",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1620; --surface:#16212d; --ink:#e5ecf2; --muted:#9dabb8; --rule:#253445; --rule-strong:#34475c;
+  --s5:#72aaf0; --s3:#e3ad4c; --s0:#8f9cab; --shu:#ec6a52; --good:#5fc08a; --warn:#e79a52; --fill5:rgba(114,170,240,.14);
+  --tabbar:#0a1018; --tabbar-ink:#e5ecf2; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0f1620; --surface:#16212d; --ink:#e5ecf2; --muted:#9dabb8; --rule:#253445; --rule-strong:#34475c;
+  --s5:#72aaf0; --s3:#e3ad4c; --s0:#8f9cab; --shu:#ec6a52; --good:#5fc08a; --warn:#e79a52; --fill5:rgba(114,170,240,.14);
+  --tabbar:#0a1018; --tabbar-ink:#e5ecf2; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+.wrap{max-width:1120px;margin:0 auto}
+header.top{padding-block:20px 8px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:.02em;margin:0;line-height:1.2}
+.tagline{margin:0;color:var(--muted);font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+
+/* タブ */
+nav.tabs{display:flex;gap:4px;margin:12px 0 16px;border-bottom:1px solid var(--rule-strong)}
+nav.tabs button{appearance:none;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--s5)}
+nav.tabs button:focus-visible{outline:2px solid var(--s5);outline-offset:2px}
+nav.tabs .ico{display:none}
+@media (max-width:760px){
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;margin:0;z-index:20;background:var(--tabbar);border:0;
+    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+  nav.tabs button{flex:1;color:var(--tabbar-ink);opacity:.62;border:0;padding:6px 4px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;margin:0}
+  nav.tabs button[aria-selected="true"]{opacity:1;color:var(--tabbar-ink);background:rgba(255,255,255,.08);border-radius:8px}
+  nav.tabs .ico{display:block;width:22px;height:22px}
+  .brand{font-size:24px}
+}
+
+section.tab{display:none}
+section.tab.on{display:block}
+.grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.grid .controls{order:2}}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px}
+h2{font-size:17px;margin:0 0 10px;font-weight:700;text-wrap:balance}
+h3{font-size:15px;margin:0 0 6px}
+.hint{color:var(--muted);font-size:13px;margin:4px 0 0}
+p{margin:0 0 8px}
+
+/* スライダー */
+.ctl{display:grid;gap:4px;padding-block:12px;border-bottom:1px dashed var(--rule)}
+.ctl:last-child{border-bottom:0}
+.ctl .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ctl label{font-weight:700;font-size:14px}
+.ctl .val{font-weight:700;font-size:18px;color:var(--ink)}
+.ctl .bar{display:flex;align-items:center;gap:10px}
+.ctl input[type=range]{flex:1;min-width:0;accent-color:var(--s5);height:28px}
+.ctl input[type=number]{width:118px;font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:6px 8px;border:1px solid var(--rule-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
+.ctl input:focus-visible{outline:2px solid var(--s5);outline-offset:1px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg label{display:flex;align-items:center;gap:6px;border:1px solid var(--rule-strong);border-radius:999px;padding:4px 12px;cursor:pointer;font-weight:400;font-size:14px}
+.seg input{accent-color:var(--s5)}
+details.more{margin-top:8px}
+details.more summary{cursor:pointer;color:var(--muted);font-size:14px;padding-block:6px}
+
+/* ゴールの日の残高（通帳の行） */
+.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.goals{grid-template-columns:minmax(0,1fr)}}
+.goal{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:12px 14px}
+.goal dt,.goal dd{border-bottom:1px solid var(--rule)}
+/* スマホ：ゴールは小さな表にして、上に貼りつける（スライダーを動かしながら見られる） */
+.mini{display:none}
+@media (max-width:620px){
+  .goals,.goals-h{display:none}
+  .chartbox{margin-top:12px}
+  .mini{margin-bottom:0;display:block;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:6px 10px;box-shadow:0 6px 14px -10px rgba(0,0,0,.35)}
+  .mini table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .mini th,.mini td{padding:4px 2px;text-align:right;white-space:nowrap;font-size:14px;border-bottom:1px solid var(--rule)}
+  .mini tr:last-child td{border-bottom:0}
+  .mini th{font-size:11px;color:var(--muted);font-weight:700}
+  .mini th:first-child,.mini td:first-child{text-align:left}
+  .mini td.a{color:var(--s5);font-weight:700;font-size:15px}
+  .mini td.b{color:var(--s3);font-weight:700}
+  .mini td.age{font-family:var(--f-display);font-weight:800;font-size:16px}
+  .mini .na{color:var(--muted);font-size:12px;text-align:left}
+  .mini .sub{font-size:11px;color:var(--muted);margin:2px 0 0;line-height:1.5}
+  .ledger th,.ledger td{padding:7px 4px;font-size:13px}
+  .ledger tbody td:first-child{white-space:nowrap}
+}
+.goal .age{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.goal .age b{font-family:var(--f-display);font-size:24px;font-weight:800}
+.goal .age span{font-size:12px;color:var(--muted)}
+.goal dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;column-gap:10px}
+.goal dt{font-size:13px;color:var(--muted);line-height:32px;display:flex;align-items:center;gap:6px}
+.goal dd{margin:0;text-align:right;line-height:32px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.goal dd.big{font-size:22px;font-weight:700;color:var(--s5)}
+.goal dd.mid{font-size:17px;font-weight:700;color:var(--s3)}
+.goal dd.base{color:var(--ink)}
+.goal .na{color:var(--muted);font-size:14px;line-height:32px;margin-top:6px}
+.goal .sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px}
+.sw.s5{background:var(--s5)}.sw.s3{background:var(--s3)}.sw.s0{background:var(--s0)}
+
+.chartbox{margin-top:16px}
+.chartbox canvas{width:100%;height:340px;display:block;touch-action:pan-y}
+@media (max-width:620px){.chartbox canvas{height:280px}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:6px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--s0) 0 4px,transparent 4px 7px)}
+.note-strip{margin-top:12px;font-size:13px;color:var(--muted)}
+
+/* 税金の表 */
+.ledger{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.ledger th,.ledger td{padding:8px 6px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+.ledger th:first-child,.ledger td:first-child{text-align:left;white-space:normal}
+.ledger thead th{font-size:12px;color:var(--muted);font-weight:700}
+.ledger tr.total td{font-weight:700;border-top:2px solid var(--rule-strong)}
+.ledger td.plus{color:var(--warn)}
+.scrollx{overflow-x:auto}
+.callout{border:1px solid var(--rule-strong);border-radius:var(--r);padding:14px;background:var(--surface);margin-top:14px}
+.callout .big{font-size:24px;font-weight:700;color:var(--good)}
+.btn{appearance:none;font:inherit;font-weight:700;border:0;border-radius:999px;padding:10px 18px;background:var(--s5);color:var(--surface);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--s5);border:1.5px solid var(--s5)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.qa{margin-top:14px}
+.qa details{border-top:1px solid var(--rule);padding-block:8px}
+.qa summary{cursor:pointer;font-weight:700;font-size:14px}
+.qa p{font-size:14px;margin-top:6px}
+.tag{display:inline-block;font-size:12px;border-radius:999px;padding:1px 10px;border:1px solid currentColor}
+.tag.good{color:var(--good)}.tag.warn{color:var(--warn)}
+
+/* NISA：判子（はんこ） */
+.nisa-rows{display:grid;gap:12px}
+.nrow{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center}
+.nrow h3{margin:0}
+.meter{grid-column:1 / -1;height:12px;border-radius:6px;background:var(--rule);overflow:hidden;position:relative}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:var(--s5);border-radius:6px}
+.meter i.over{background:var(--shu)}
+.stamp{width:74px;height:74px;border-radius:50%;border:2.5px solid var(--shu);color:var(--shu);display:grid;place-items:center;
+  font-family:var(--f-display);font-weight:800;font-size:15px;line-height:1.15;text-align:center;transform:rotate(-9deg);opacity:.92}
+.stamp small{display:block;font-size:10px;letter-spacing:.1em}
+.stamp.off{border-color:var(--muted);color:var(--muted)}
+.nrow .detail{grid-column:1 / -1;font-size:13px;color:var(--muted)}
+
+/* 保存 */
+.preview{margin-top:14px;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:10px;text-align:center}
+.preview img{max-width:100%;height:auto;max-height:520px;border:1px solid var(--rule)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:999px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (min-width:761px){.toast{bottom:24px}}
+
+footer.legal{margin-top:28px;font-size:12px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+footer.legal a{color:var(--muted)}
+footer.legal ul{padding-left:18px;margin:6px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <h1 class="brand">Tsumitate Goal</h1>
+  <p class="tagline">何歳から積み立てると、60歳・65歳・70歳の日にいくら？</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="切りかえ">
+  <button role="tab" id="t-sim" aria-selected="true" data-tab="sim"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M5 16l5-5 4 3 6-7"/></svg>積立</button>
+  <button role="tab" id="t-tax" aria-selected="false" data-tab="tax"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>副業と税金</button>
+  <button role="tab" id="t-nisa" aria-selected="false" data-tab="nisa"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M9 12l2 2 4-4"/></svg>NISA</button>
+  <button role="tab" id="t-save" aria-selected="false" data-tab="save"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>保存</button>
+</nav>
+
+<!-- 積立 -->
+<section class="tab on" id="tab-sim" role="tabpanel" aria-labelledby="t-sim">
+  <div class="mini" id="mini" aria-label="ゴールの日の残高"></div>
+  <div class="grid">
+    <div class="controls panel">
+      <h2>条件をえらぶ</h2>
+      <div id="ctl-sim"></div>
+      <details class="more"><summary>くわしい設定（やめる年齢・物価）</summary><div id="ctl-sim-more"></div></details>
+    </div>
+    <div>
+      <h2 class="goals-h">ゴールの日の残高</h2>
+      <div class="goals" id="goals"></div>
+      <div class="panel chartbox">
+        <canvas id="chart" aria-label="年齢ごとの資産の線の図"></canvas>
+        <div class="legend">
+          <span><i style="background:var(--s5)"></i><b id="lg5">利回り5%</b></span>
+          <span><i style="background:var(--s3)"></i><b id="lg3">利回り3%</b></span>
+          <span><i class="dash"></i>元本（貯金と同じ・利息なし）</span>
+        </div>
+        <p class="note-strip" id="chartNote">図をさわると、その年齢の金額が出ます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 税金 -->
+<section class="tab" id="tab-tax" role="tabpanel" aria-labelledby="t-tax">
+  <div class="grid">
+    <div class="controls panel">
+      <h2>本業と副業</h2>
+      <div id="ctl-tax"></div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>1年でかかるお金（概算・2026年分）</h2>
+        <div class="scrollx"><table class="ledger" id="taxTable"></table></div>
+        <p class="hint" id="taxHint"></p>
+      </div>
+      <div class="callout" id="sideBox"></div>
+      <div class="qa panel" style="margin-top:14px">
+        <h2>よくある質問</h2>
+        <details><summary>年収は「額面」と「手取り」のどっち？</summary><p><b>額面</b>です。税金や社会保険料を引く前の、1年分の合計（源泉徴収票の「支払金額」）を入れてください。手取りはこのツールが計算します。</p></details>
+        <details><summary>ボーナスはどうあつかう？</summary><p>税金の計算では、月の給料もボーナスも同じ「給与」です。<b>ボーナスもふくめた1年分の額面</b>を入れれば大丈夫です。毎月の天引きの額はちがっても、年末調整で1年分にそろえて精算されます。</p></details>
+        <details><summary>日雇いバイトの税金は？</summary><p>バイト代も「給与」なので、本業の給与と合わせて計算します。副業の給与が年20万円以下なら、所得税の確定申告をしなくてよい場合があります（住民税の申告は必要です）。バイト先で天引きされた税金は、確定申告で精算されます。</p></details>
+        <details><summary>業務委託・フリマ・ポイ活は？</summary><p>「副業の種類」を「業務委託など」にして、売上から経費を引いた<b>所得</b>を入れてください。年20万円をこえると確定申告が必要です。</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NISA -->
+<section class="tab" id="tab-nisa" role="tabpanel" aria-labelledby="t-nisa">
+  <div class="grid">
+    <div class="panel">
+      <h2>NISA の枠</h2>
+      <p>新しいNISA（2024年〜）で税金がかからないのは、<b>1人 1,800万円まで</b>（買った値段の合計）。1年に入れられるのは <b>つみたて投資枠 120万円＋成長投資枠 240万円</b> です。</p>
+      <div id="nisaYear"></div>
+      <p class="hint">NISAの口座は、その年の1月1日に18歳以上の人が作れます。2027年から18歳未満向けの枠もできますが、親の手続きなどが別になるため、このツールは18歳からにしています。</p>
+    </div>
+    <div>
+      <div class="nisa-rows" id="nisaRows"></div>
+      <div class="callout" id="nisaTax"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 保存 -->
+<section class="tab" id="tab-save" role="tabpanel" aria-labelledby="t-save">
+  <div class="panel">
+    <h2>結果を保存する</h2>
+    <p>いまの条件の結果を、1枚の画像かPDFにします。スマホの写真やファイルに残せます。</p>
+    <div class="seg" style="margin-top:6px"><label><input type="checkbox" id="incTax" checked> 副業と税金の結果も入れる</label></div>
+    <div class="btns">
+      <button class="btn" id="bPng">画像（PNG）で保存</button>
+      <button class="btn" id="bPdf">PDFで保存</button>
+      <button class="btn ghost" id="bCopy">結果を文章でコピー</button>
+    </div>
+    <p class="hint" id="saveHint">保存のボタンが動かないときは、下に出る画像を長押し（パソコンは右クリック）して保存してください。</p>
+    <div class="preview" id="preview" hidden><img id="previewImg" alt="結果の画像"></div>
+    <textarea id="copyArea" hidden readonly style="width:100%;height:160px;margin-top:10px;font:inherit"></textarea>
+  </div>
+</section>
+
+<footer class="legal">
+  <b>ご注意</b>
+  <ul>
+    <li>このツールは、条件を入れて計算する<b>目安</b>です。将来の運用の成果を約束するものではなく、特定の商品をすすめるものでもありません。投資は元本割れすることがあります。</li>
+    <li>利回りは毎年同じ（月ごとの複利・毎月末に積立）として計算しています。手数料（信託報酬）・為替・年金は入れていません。</li>
+    <li>税金は2026年分のルール（基礎控除・給与所得控除の引き上げ）をもとにした概算です。扶養・保険・ふるさと納税などの控除は入れていません。正確な金額は税務署や税理士にご確認ください。</li>
+    <li>参考：<a href="https://www.fsa.go.jp/policy/nisa2/" target="_blank" rel="noopener">金融庁 NISA特設ウェブサイト</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm" target="_blank" rel="noopener">国税庁 給与所得控除</a>／<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/jigyounushi/page09_00001.html" target="_blank" rel="noopener">厚生労働省 高年齢者の雇用</a></li>
+  </ul>
+</footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ====== 数字の決まり ====== */
+const NISA_LIFE = 18000000, NISA_GROWTH_LIFE = 12000000, NISA_TSUMI_YEAR = 1200000, NISA_GROWTH_YEAR = 2400000;
+const TAXABLE_RATE = 0.20315; // 課税口座の利益にかかる税金（所得税15.315%＋住民税5%）
+const GOALS = [
+  {age:60, title:"定年", sub:"いまの多くの会社の定年"},
+  {age:65, title:"雇用確保", sub:"2025年4月から65歳までの雇用確保が義務"},
+  {age:70, title:"就業確保", sub:"70歳までの就業確保が努力義務（2021年〜）"}
+];
+const LAST_AGE = 70;
+
+/* ====== 入力の部品 ====== */
+const CTL = {
+  startAge:{label:"積立を始める年齢", min:18, max:69, step:1, v:30, fmt:v=>v+"歳", box:"sim"},
+  monthly:{label:"毎月の積立額", min:1000, max:300000, step:1000, v:30000, fmt:v=>manSen(v), box:"sim", hint:"1,000円ごとに選べます"},
+  lump:{label:"はじめに入れるお金", min:0, max:5000000, step:10000, v:0, fmt:v=>v?manSen(v):"なし", box:"sim"},
+  rateA:{label:"基準の利回り（年）", min:0, max:10, step:0.1, v:5, fmt:v=>v.toFixed(1)+"%", box:"sim", hint:"世界株・米国株の積立の試算でよく使われる目安"},
+  rateB:{label:"現実想定の利回り（年）", min:0, max:10, step:0.1, v:3, fmt:v=>v.toFixed(1)+"%", box:"sim", hint:"ひかえめにみた目安（実際はマイナスの年もあります）"},
+  stopAge:{label:"積立をやめる年齢", min:19, max:70, step:1, v:70, fmt:v=>v>=70?"ゴールまで続ける":v+"歳でやめる", box:"sim-more", hint:"やめたあとも、売らずに運用だけ続ける計算です"},
+  infl:{label:"物価の上がり方（年）", min:0, max:4, step:0.1, v:0, fmt:v=>v?v.toFixed(1)+"%":"考えない", box:"sim-more", hint:"入れると「いまのお金の価値だと◯円」も出ます（日銀の目標は2%）"},
+  mainIncome:{label:"本業の年収（額面）", min:0, max:20000000, step:10000, v:4000000, fmt:v=>manSen(v), box:"tax", hint:"ボーナスもふくめた1年分。税金を引く前の金額"},
+  sideIncome:{label:"副業の年間収入", min:0, max:5000000, step:10000, v:600000, fmt:v=>manSen(v), box:"tax"},
+  siRate:{label:"社会保険料の割合", min:0, max:20, step:0.1, v:15, fmt:v=>v.toFixed(1)+"%", box:"tax", hint:"会社員はだいたい15%前後（40歳以上は介護保険で約0.8%ふえる）"},
+  saveRatio:{label:"副業の手取りのうち積立に回す割合", min:0, max:100, step:5, v:50, fmt:v=>v+"%", box:"tax"}
+};
+let sideType = "kyuyo"; // kyuyo = バイト（給与）／zatsu = 業務委託など（雑所得）
+const S = {}; for (const k in CTL) S[k] = CTL[k].v;
+
+// 前回の入力（この端末だけ）
+const STORE_KEY = "tsumitate-goal-v1";
+try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+  if (saved) { for (const k in CTL) if (typeof saved[k] === "number") S[k] = clamp(saved[k], CTL[k].min, CTL[k].max); if (saved.sideType) sideType = saved.sideType; } } catch(e) {}
+function persist(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(Object.assign({sideType}, S))); } catch(e) {} }
+
+function clamp(v,a,b){ return Math.min(b, Math.max(a, v)); }
+function manSen(y){ y = Math.round(y);
+  if (y >= 100000000) return fmtYen(y);
+  const man = Math.floor(y/10000), rest = y%10000, sen = Math.floor(rest/1000), en = rest%1000;
+  let s = "";
+  if (man) s += man.toLocaleString("ja-JP") + "万";
+  if (sen) s += sen + "千";
+  if (en) s += en;
+  return (s || "0") + "円"; }
+function fmtYen(y){ y = Math.round(y); const neg = y < 0; y = Math.abs(y);
+  let s;
+  if (y >= 100000000) { const oku = Math.floor(y/100000000), man = Math.round((y%100000000)/10000);
+    s = man >= 10000 ? (oku+1)+"億円" : oku+"億" + (man ? man.toLocaleString("ja-JP")+"万" : "") + "円"; }
+  else if (y >= 10000) s = Math.round(y/10000).toLocaleString("ja-JP") + "万円";
+  else s = y.toLocaleString("ja-JP") + "円";
+  return (neg?"−":"") + s; }
+function yen(y){ return Math.round(y).toLocaleString("ja-JP") + "円"; }
+
+function buildControls(){
+  for (const k in CTL){ const c = CTL[k];
+    const host = document.getElementById("ctl-" + c.box);
+    const d = document.createElement("div"); d.className = "ctl";
+    d.innerHTML = `<div class="row"><label for="r-${k}">${c.label}</label><span class="val num" id="v-${k}"></span></div>
+      <div class="bar"><input type="range" id="r-${k}" min="${c.min}" max="${c.max}" step="${c.step}">
+      <input type="number" id="n-${k}" min="${c.min}" max="${c.max}" step="${c.step}" aria-label="${c.label}（数字で入れる）"></div>
+      ${c.hint?`<p class="hint">${c.hint}</p>`:""}`;
+    if (k === "sideIncome"){
+      const seg = document.createElement("div"); seg.className = "ctl";
+      seg.innerHTML = `<div class="row"><label>副業の種類</label></div>
+        <div class="seg"><label><input type="radio" name="sideType" id="st-kyuyo" value="kyuyo"> バイト・パート（給与）</label>
+        <label><input type="radio" name="sideType" id="st-zatsu" value="zatsu"> 業務委託・フリマなど</label></div>`;
+      host.appendChild(seg);
+    }
+    host.appendChild(d);
+    const r = d.querySelector("input[type=range]"), n = d.querySelector("input[type=number]");
+    r.addEventListener("input", () => setVal(k, +r.value));
+    n.addEventListener("change", () => { let v = +n.value; if (!isFinite(v)) v = S[k]; setVal(k, v); });
+  }
+  document.querySelectorAll('input[name=sideType]').forEach(el => {
+    el.checked = el.value === sideType;
+    el.addEventListener("change", () => { sideType = el.value; render(); });
+  });
+}
+function setVal(k, v){ const c = CTL[k];
+  v = clamp(Math.round(v / c.step) * c.step, c.min, c.max);
+  v = +v.toFixed(2);
+  S[k] = v;
+  if (k === "startAge" && S.stopAge <= v) S.stopAge = Math.min(70, v + 1);
+  if (k === "stopAge" && v <= S.startAge) S.stopAge = Math.min(70, S.startAge + 1);
+  render(); }
+function syncControls(){
+  for (const k in CTL){ const c = CTL[k];
+    const r = document.getElementById("r-"+k), n = document.getElementById("n-"+k);
+    if (k === "stopAge") { r.min = n.min = Math.min(70, S.startAge + 1); }
+    if (document.activeElement !== r) r.value = S[k];
+    if (document.activeElement !== n) n.value = S[k];
+    let label = c.fmt(S[k]);
+    if (k === "sideIncome") label = (sideType === "kyuyo" ? "" : "所得 ") + label;
+    document.getElementById("v-"+k).textContent = label; }
+  const lab = document.querySelector('label[for="r-sideIncome"]');
+  lab.textContent = sideType === "kyuyo" ? "副業の年間収入（バイト代の合計）" : "副業の年間所得（売上−経費）";
+}
+
+/* ====== 積立の計算 ====== */
+// 毎月末に積立・月ごとの複利（年利÷12）。NISAは 年ごとの枠と生涯枠を元本で数え、入りきらない分は課税口座へ
+function simulate(rate){
+  const i = rate/100/12, n = S.startAge, N = (LAST_AGE - n) * 12, stopM = (S.stopAge - n) * 12;
+  let nV=0, tV=0, nC=0, tC=0, life=0, gLife=0, yT=0, yG=0, fullAt=null;
+  const pts = [];
+  // はじめのお金：成長投資枠へ（入りきらない分は課税口座）
+  if (S.lump > 0){ const g = Math.max(0, Math.min(S.lump, NISA_GROWTH_YEAR - yG, NISA_GROWTH_LIFE - gLife, NISA_LIFE - life));
+    nV += g; nC += g; life += g; gLife += g; yG += g; tV += S.lump - g; tC += S.lump - g; }
+  pts.push({age:n, cost:nC+tC, value:nV+tV, nC, tC, nV, tV});
+  for (let m = 1; m <= N; m++){
+    if (m > 1 && (m-1) % 12 === 0){ yT = 0; yG = 0; }
+    nV *= 1 + i; tV *= 1 + i;
+    if (m <= stopM){ const c = S.monthly;
+      const t = Math.max(0, Math.min(c, NISA_TSUMI_YEAR - yT, NISA_LIFE - life));
+      yT += t; life += t;
+      const g = Math.max(0, Math.min(c - t, NISA_GROWTH_YEAR - yG, NISA_GROWTH_LIFE - gLife, NISA_LIFE - life));
+      yG += g; gLife += g; life += g;
+      const x = c - t - g;
+      nV += t + g; nC += t + g; tV += x; tC += x;
+      if (fullAt === null && life >= NISA_LIFE) fullAt = n + m/12;
+    }
+    pts.push({age:n + m/12, cost:nC+tC, value:nV+tV, nC, tC, nV, tV});
+  }
+  return {pts, fullAt};
+}
+function at(sim, age){ const m = Math.round((age - S.startAge) * 12); return sim.pts[m]; }
+function afterTax(p){ const gain = Math.max(0, p.tV - p.tC); return p.value - gain * TAXABLE_RATE; }
+function realValue(v, age){ const y = age - S.startAge; return v / Math.pow(1 + S.infl/100, y); }
+
+/* ====== 税金の計算（2026年分の概算） ====== */
+function kyuyoKoujo(x){ // 給与所得控除（令和8・9年分の特例：220万円以下は74万円）
+  if (x <= 0) return 0;
+  let d;
+  if (x <= 2200000) d = 740000;
+  else if (x <= 3600000) d = x*0.3 + 80000;
+  else if (x <= 6600000) d = x*0.2 + 440000;
+  else if (x <= 8500000) d = x*0.1 + 1100000;
+  else d = 1950000;
+  return Math.min(x, d); }
+function kisoShotoku(s){ // 所得税の基礎控除（令和8年分）
+  if (s <= 4890000) return 1040000; if (s <= 6550000) return 670000; if (s <= 23500000) return 620000;
+  if (s <= 24000000) return 480000; if (s <= 24500000) return 320000; if (s <= 25000000) return 160000; return 0; }
+function kisoJumin(s){ if (s <= 24000000) return 430000; if (s <= 24500000) return 290000; if (s <= 25000000) return 150000; return 0; }
+function incomeTaxOn(k){ // 課税所得 → 所得税（復興特別所得税2.1%こみ）
+  k = Math.floor(Math.max(0,k)/1000)*1000;
+  const B = [[1950000,.05,0],[3300000,.10,97500],[6950000,.20,427500],[9000000,.23,636000],[18000000,.33,1536000],[40000000,.40,2796000],[Infinity,.45,4796000]];
+  for (const [lim, r, sub] of B) if (k <= lim) return Math.floor(Math.max(0, k*r - sub) * 1.021 / 100) * 100;
+  return 0; }
+function calcTax(main, side, type, siRate){
+  const salary = main + (type === "kyuyo" ? side : 0);
+  const kyuyoShotoku = Math.max(0, salary - kyuyoKoujo(salary));
+  const other = type === "zatsu" ? side : 0;
+  const total = kyuyoShotoku + other;          // 合計所得
+  const si = Math.round(main * siRate/100);     // 社会保険料（副業の分はかからない前提）
+  const kIncome = total - si - kisoShotoku(total);
+  const incomeTax = incomeTaxOn(kIncome);
+  let jumin = 0;
+  if (total > 450000){ const kJ = Math.floor(Math.max(0, total - si - kisoJumin(total))/1000)*1000;
+    const shotokuwari = Math.max(0, kJ*0.10 - (kJ > 0 ? 2500 : 0));
+    jumin = Math.floor(shotokuwari/100)*100 + 5000; }
+  const gross = main + side;
+  return {gross, si, incomeTax, jumin, net: gross - si - incomeTax - jumin, total}; }
+
+/* ====== 線の図 ====== */
+const cv = document.getElementById("chart");
+let hoverAge = null, last = null;
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function themeColors(){ return {ink:cssVar("--ink"), muted:cssVar("--muted"), rule:cssVar("--rule"), s5:cssVar("--s5"), s3:cssVar("--s3"), s0:cssVar("--s0"), shu:cssVar("--shu"), fill:cssVar("--fill5"), surface:cssVar("--surface")}; }
+function niceStep(max){ const raw = max/5, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw/p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
+function yLabel(v){ if (v >= 100000000) return (v/100000000).toFixed(v%100000000?1:0) + "億"; return (v/10000).toLocaleString("ja-JP") + "万"; }
+function drawChart(ctx, W, H, col, data, opts){
+  const font = opts.font || '"BIZ UDPGothic","Hiragino Sans",sans-serif', fs = opts.fs || 12;
+  const L = opts.padL || 58, R = 14, T = 16, B = 34;
+  const w = W - L - R, h = H - T - B;
+  const n = data.n, xMax = LAST_AGE, xMin = n;
+  const ymaxRaw = Math.max(1, ...data.a.map(p=>p.value), ...data.b.map(p=>p.value));
+  const step = niceStep(ymaxRaw), ymax = Math.ceil(ymaxRaw/step)*step;
+  const X = a => L + (xMax === xMin ? 0 : (a - xMin)/(xMax - xMin)) * w;
+  const Y = v => T + h - v/ymax*h;
+  ctx.clearRect(0,0,W,H);
+  if (opts.bg){ ctx.fillStyle = opts.bg; ctx.fillRect(0,0,W,H); }
+  ctx.font = `${fs}px ${font}`; ctx.textBaseline = "middle";
+  // 横線と目盛り
+  for (let v = 0; v <= ymax + 1; v += step){ const y = Math.round(Y(v)) + .5;
+    ctx.strokeStyle = col.rule; ctx.lineWidth = 1; ctx.setLineDash(v ? [3,4] : []);
+    ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + w, y); ctx.stroke();
+    ctx.fillStyle = col.muted; ctx.textAlign = "right"; ctx.fillText(v ? yLabel(v) : "0", L - 8, y); }
+  ctx.setLineDash([]);
+  // 年齢の目盛り
+  const span = xMax - xMin, xs = span > 30 ? 10 : span > 12 ? 5 : span > 5 ? 2 : 1;
+  ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.fillStyle = col.muted;
+  const ticks = new Set([xMin, xMax]); for (let a = Math.ceil(xMin/xs)*xs; a <= xMax; a += xs) ticks.add(a);
+  [...ticks].sort((p,q)=>p-q).forEach((a, idx, arr) => { if (idx > 0 && X(a) - X(arr[idx-1]) < fs*2.4 && a !== xMax) return; ctx.fillText(a + "歳", X(a), T + h + 8); });
+  // ゴールの縦線
+  GOALS.forEach((g, gi) => { if (g.age <= xMin) return; const x = Math.round(X(g.age)) + .5;
+    const ly = T + 2 + (gi === 1 ? fs + 4 : 0); // 65歳だけ1段下げて、となりの文字と重ならないようにする
+    ctx.strokeStyle = col.shu; ctx.globalAlpha = .55; ctx.setLineDash([2,3]); ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + h); ctx.stroke(); ctx.globalAlpha = 1; ctx.setLineDash([]);
+    ctx.fillStyle = col.shu; ctx.textAlign = g.age === xMax ? "right" : "center"; ctx.textBaseline = "top";
+    ctx.font = `bold ${fs-1}px ${font}`; ctx.fillText(g.age + "歳", g.age === xMax ? x - 3 : x, ly); ctx.font = `${fs}px ${font}`; });
+  // NISA の生涯枠（元本）
+  if (NISA_LIFE < ymax){ const y = Math.round(Y(NISA_LIFE)) + .5; ctx.strokeStyle = col.s0; ctx.setLineDash([8,4]); ctx.globalAlpha = .7;
+    ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + w, y); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    ctx.fillStyle = col.muted; ctx.textAlign = "left"; ctx.textBaseline = "bottom"; ctx.fillText("NISAの生涯枠 1,800万（元本）", L + 6, y - 3); }
+  // 面と線
+  const path = (arr, key) => { ctx.beginPath(); arr.forEach((p, k) => { const x = X(p.age), y = Y(p[key]); k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); };
+  path(data.a, "value"); ctx.lineTo(X(xMax), Y(0)); ctx.lineTo(X(xMin), Y(0)); ctx.closePath(); ctx.fillStyle = col.fill; ctx.fill();
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  path(data.a, "cost"); ctx.strokeStyle = col.s0; ctx.lineWidth = 2; ctx.setLineDash([6,5]); ctx.stroke(); ctx.setLineDash([]);
+  path(data.b, "value"); ctx.strokeStyle = col.s3; ctx.lineWidth = 2.5; ctx.stroke();
+  path(data.a, "value"); ctx.strokeStyle = col.s5; ctx.lineWidth = 3; ctx.stroke();
+  // 終わりの点
+  [[data.a, col.s5], [data.b, col.s3]].forEach(([arr, c]) => { const p = arr[arr.length-1]; ctx.fillStyle = c; ctx.beginPath(); ctx.arc(X(p.age), Y(p.value), 4, 0, 7); ctx.fill(); });
+  // さわった年齢
+  if (opts.hover != null){ const a = clamp(Math.round(opts.hover), xMin, xMax), m = Math.round((a - xMin)*12);
+    const pa = data.a[m], pb = data.b[m]; const x = X(a);
+    ctx.strokeStyle = col.ink; ctx.globalAlpha = .35; ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + h); ctx.stroke(); ctx.globalAlpha = 1;
+    [[pa.value, col.s5], [pb.value, col.s3], [pa.cost, col.s0]].forEach(([v, c]) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, Y(v), 4.5, 0, 7); ctx.fill(); });
+    const lines = [[a + "歳のとき", col.ink], [data.la + "　" + fmtYen(pa.value), col.s5], [data.lb + "　" + fmtYen(pb.value), col.s3], ["元本　" + fmtYen(pa.cost), col.muted]];
+    ctx.font = `bold ${fs}px ${font}`; const bw = Math.max(...lines.map(l => ctx.measureText(l[0]).width)) + 20, bh = lines.length * (fs + 7) + 12;
+    let bx = x + 12; if (bx + bw > L + w) bx = x - 12 - bw; const by = T + 18;
+    ctx.fillStyle = col.surface; ctx.strokeStyle = col.rule; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 8) : ctx.rect(bx, by, bw, bh); ctx.fill(); ctx.stroke();
+    ctx.textAlign = "left"; ctx.textBaseline = "top"; lines.forEach((l, k) => { ctx.fillStyle = l[1]; ctx.fillText(l[0], bx + 10, by + 8 + k*(fs + 7)); });
+  }
+}
+function paintChart(){
+  if (!last) return;
+  const dpr = window.devicePixelRatio || 1, r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0);
+  drawChart(ctx, r.width, r.height, themeColors(), last.chartData, {hover: hoverAge, fs: r.width < 500 ? 11 : 12, padL: r.width < 500 ? 50 : 58});
+}
+function pointerAge(e){ const r = cv.getBoundingClientRect(), L = r.width < 500 ? 50 : 58, w = r.width - L - 14;
+  return S.startAge + clamp((e.clientX - r.left - L)/w, 0, 1) * (LAST_AGE - S.startAge); }
+cv.addEventListener("pointermove", e => { hoverAge = pointerAge(e); paintChart(); });
+cv.addEventListener("pointerdown", e => { hoverAge = pointerAge(e); paintChart(); });
+cv.addEventListener("pointerleave", e => { if (e.pointerType === "mouse"){ hoverAge = null; paintChart(); } });
+
+/* ====== 画面を描く ====== */
+function render(){
+  syncControls(); persist();
+  const A = simulate(S.rateA), Bs = simulate(S.rateB);
+  const la = "利回り" + S.rateA.toFixed(1) + "%", lb = "利回り" + S.rateB.toFixed(1) + "%";
+  document.getElementById("lg5").textContent = la + "（基準）"; document.getElementById("lg3").textContent = lb + "（現実想定）";
+  last = {A, B:Bs, la, lb, chartData:{n:S.startAge, a:A.pts, b:Bs.pts, la, lb}};
+  // ゴールの日
+  const gHost = document.getElementById("goals"); gHost.innerHTML = "";
+  GOALS.forEach(g => {
+    const el = document.createElement("article"); el.className = "goal";
+    if (g.age <= S.startAge){ el.innerHTML = `<div class="age"><b>${g.age}歳</b><span>${g.title}</span></div><p class="na">始める年齢が${g.age}歳以上なので、このゴールはありません。</p>`; gHost.appendChild(el); return; }
+    const pa = at(A, g.age), pb = at(Bs, g.age);
+    const yrs = g.age - S.startAge;
+    const taxNoteA = pa.tV > 0 ? `<div class="sub">NISAの外の分の税金を引くと ${fmtYen(afterTax(pa))}</div>` : "";
+    const realNote = S.infl > 0 ? `<div class="sub">いまのお金の価値だと 約${fmtYen(realValue(pa.value, g.age))}（物価${S.infl.toFixed(1)}%）</div>` : "";
+    el.innerHTML = `<div class="age"><b>${g.age}歳</b><span>${g.title}・${yrs}年後</span></div>
+      <dl><dt><i class="sw s5"></i>${S.rateA.toFixed(1)}%</dt><dd class="big num">${fmtYen(pa.value)}</dd>
+      <dt><i class="sw s3"></i>${S.rateB.toFixed(1)}%</dt><dd class="mid num">${fmtYen(pb.value)}</dd>
+      <dt><i class="sw s0"></i>元本</dt><dd class="base num">${fmtYen(pa.cost)}</dd></dl>
+      <div class="sub">${g.sub}</div>${taxNoteA}${realNote}`;
+    gHost.appendChild(el);
+  });
+  // スマホ用の小さな表
+  let mrows = "";
+  GOALS.forEach(g => {
+    if (g.age <= S.startAge){ mrows += `<tr><td class="age">${g.age}歳</td><td colspan="3" class="na">始める年齢より前なので対象外</td></tr>`; return; }
+    const pa = at(A, g.age), pb = at(Bs, g.age);
+    mrows += `<tr><td class="age">${g.age}歳</td><td class="a">${fmtYen(pa.value)}</td><td class="b">${fmtYen(pb.value)}</td><td>${fmtYen(pa.cost)}</td></tr>`; });
+  const g65 = GOALS.find(g => g.age > S.startAge);
+  let msub = "";
+  if (g65 && S.infl > 0) msub = `<p class="sub">${g65.age}歳の${S.rateA.toFixed(1)}%は、いまのお金の価値だと約${fmtYen(realValue(at(A, g65.age).value, g65.age))}（物価${S.infl.toFixed(1)}%）</p>`;
+  if (A.fullAt) msub += `<p class="sub">NISAの枠をこえた分は、売るときに税金がかかります（NISAのタブ）</p>`;
+  document.getElementById("mini").innerHTML = `<table><thead><tr><th>ゴール</th><th>${S.rateA.toFixed(1)}%</th><th>${S.rateB.toFixed(1)}%</th><th>元本</th></tr></thead><tbody>${mrows}</tbody></table>${msub}`;
+  document.getElementById("chartNote").textContent = `図をさわると、その年齢の金額が出ます。${S.stopAge < 70 ? S.stopAge + "歳で積立をやめ、そのあとは運用だけ続ける計算です。" : ""}`;
+  paintChart();
+  renderTax(); renderNisa(A, Bs);
+}
+let lastTax = null;
+function renderTax(){
+  const base = calcTax(S.mainIncome, 0, sideType, S.siRate), both = calcTax(S.mainIncome, S.sideIncome, sideType, S.siRate);
+  const d = k => both[k] - base[k];
+  const nf = v => Math.round(v).toLocaleString("ja-JP");
+  const row = (name, k, isTotal) => `<tr${isTotal?' class="total"':''}><td>${name}</td><td>${nf(base[k])}</td><td>${nf(both[k])}</td><td class="${d(k)>0 && !isTotal && k!=="gross"?'plus':''}">${d(k)>=0?"+":""}${nf(d(k))}</td></tr>`;
+  document.getElementById("taxTable").innerHTML = `<thead><tr><th>（円）</th><th>本業だけ</th><th>＋副業</th><th>ちがい</th></tr></thead><tbody>
+    ${row("額面","gross")}${row("社会保険料","si")}${row("所得税","incomeTax")}${row("住民税※","jumin")}${row("手取り","net",true)}</tbody>`;
+  const sideNet = both.net - base.net, addTax = d("incomeTax") + d("jumin");
+  const monthly = Math.floor(sideNet * S.saveRatio/100 / 12 / 1000) * 1000;
+  lastTax = {base, both, sideNet, addTax, monthly};
+  const small = S.sideIncome <= 200000 && S.sideIncome > 0;
+  const shinkoku = S.sideIncome === 0 ? "" : small
+    ? `<span class="tag good">所得税の確定申告はいらない場合あり</span> 副業が年20万円以下です。住民税の申告は必要です。`
+    : `<span class="tag warn">確定申告が必要</span> 副業が年20万円をこえるため、翌年3月15日までに確定申告をします。`;
+  document.getElementById("taxHint").innerHTML = "※住民税は翌年の6月から払います。" + shinkoku +(sideType === "kyuyo" ? " バイトの社会保険料はかからない前提です（週20時間以上などの条件で加入する場合はへります）。" : "");
+  document.getElementById("sideBox").innerHTML = S.sideIncome === 0 ? `<p>副業の収入を入れると、手取りでいくらふえて、毎月いくら積み立てられるかが出ます。</p>` :
+    `<h3>副業で手取りがふえる額（1年）</h3>
+    <div class="big num">${yen(sideNet)}</div>
+    <p class="hint">副業の${sideType==="kyuyo"?"収入":"所得"} ${yen(S.sideIncome)} から、ふえる税金 ${yen(addTax)}（所得税 ${yen(d("incomeTax"))}・住民税 ${yen(d("jumin"))}）を引いた額</p>
+    <p style="margin-top:10px">このうち <b>${S.saveRatio}%</b> を積立に回すと、<b class="num">毎月 ${manSen(monthly)}</b> 積み立てられます。</p>
+    <div class="btns"><button class="btn" id="bUse" ${monthly < 1000 ? "disabled" : ""}>この額で積立を計算する</button></div>`;
+  const bUse = document.getElementById("bUse");
+  if (bUse) bUse.onclick = () => { setVal("monthly", Math.min(300000, monthly)); showTab("sim"); toast("毎月の積立額を " + manSen(Math.min(300000, monthly)) + " にしました"); };
+}
+function renderNisa(A, Bs){
+  const yearAmt = S.monthly * 12;
+  const yearHost = document.getElementById("nisaYear");
+  const msgs = [];
+  if (S.monthly <= 100000) msgs.push(`<p><span class="tag good">つみたて投資枠に入ります</span> 1年で ${fmtYen(yearAmt)}（枠は120万円）</p>`);
+  else if (yearAmt <= 3600000) msgs.push(`<p><span class="tag warn">成長投資枠も使います</span> 月10万円をこえる分（1年 ${fmtYen(yearAmt - 1200000)}）は成長投資枠で積み立てる計算です。</p>`);
+  if (S.lump > 0) msgs.push(`<p class="hint">はじめに入れるお金は成長投資枠（1年240万円まで）に入れる計算です。${S.lump > 2400000 ? "入りきらない分は課税口座にしています（実際は何年かに分ければ枠に入れられます）。" : ""}</p>`);
+  const y = A.fullAt;
+  msgs.push(y ? `<p><b>${Math.floor(y)}歳${Math.round((y%1)*12)}か月</b>で生涯枠1,800万円を使い切ります。そのあとの積立は課税口座の計算です。</p>` : `<p>70歳まで続けても、生涯枠1,800万円の中に収まります。</p>`);
+  yearHost.innerHTML = msgs.join("");
+  const host = document.getElementById("nisaRows"); host.innerHTML = "";
+  GOALS.forEach(g => { if (g.age <= S.startAge) return;
+    const pa = at(A, g.age), used = pa.nC, pct = Math.min(100, pa.cost / NISA_LIFE * 100), over = pa.cost > NISA_LIFE;
+    const el = document.createElement("div"); el.className = "nrow";
+    el.innerHTML = `<div><h3>${g.age}歳までの元本 <span class="num">${fmtYen(pa.cost)}</span></h3>
+      <p class="hint">NISAで使う枠 ${fmtYen(used)}／残り ${fmtYen(Math.max(0, NISA_LIFE - used))}</p></div>
+      <div class="stamp ${over ? "off" : ""}" aria-label="${over ? "枠こえ" : "枠内"}">${over ? "枠<br>こえ" : "<span><small>非課税</small>枠内</span>"}</div>
+      <div class="meter" role="img" aria-label="生涯枠の${Math.round(pct)}%を使用"><i class="${over ? "over" : ""}" style="width:${pct}%"></i></div>
+      <div class="detail">${over ? `枠をこえた元本 ${fmtYen(pa.tC)} は課税口座。${S.rateA.toFixed(1)}%のとき、売るときの税金は 約${fmtYen((pa.tV - pa.tC) * TAXABLE_RATE)}。` : "元本がすべて非課税の枠に入ります。"}</div>`;
+    host.appendChild(el); });
+  // NISAで節約できる税金
+  const g = GOALS.find(x => x.age > S.startAge && x.age === 65) || GOALS.filter(x => x.age > S.startAge).pop();
+  const box = document.getElementById("nisaTax");
+  if (!g){ box.innerHTML = ""; return; }
+  const pa = at(A, g.age), pb = at(Bs, g.age);
+  const saveA = (pa.nV - pa.nC) * TAXABLE_RATE, saveB = (pb.nV - pb.nC) * TAXABLE_RATE;
+  box.innerHTML = `<h3>NISAで払わなくてすむ税金（利回りどおりに増え、${g.age}歳で売った場合）</h3>
+    <div class="big num">${S.rateA.toFixed(1)}%：${fmtYen(saveA)}</div>
+    <p class="num">${S.rateB.toFixed(1)}%：${fmtYen(saveB)}</p>
+    <p class="hint">ふつうの口座（課税口座）だと、利益の20.315%が税金になります。NISAの中の利益にはかかりません。</p>`;
+}
+
+/* ====== タブ ====== */
+function showTab(name){
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false"));
+  document.querySelectorAll("section.tab").forEach(s => s.classList.toggle("on", s.id === "tab-" + name));
+  try { localStorage.setItem(STORE_KEY + "-tab", name); } catch(e) {}
+  if (name === "sim") requestAnimationFrame(paintChart);
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+/* ====== 保存（画像・PDF・文章） ====== */
+function exportCanvas(){
+  const W = 1240, H = 1754, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  const col = {ink:"#1b2735", muted:"#5b6876", rule:"#d3dfdc", s5:"#1f5fa8", s3:"#b97a12", s0:"#7d8a97", shu:"#c63f2a", fill:"rgba(31,95,168,.10)", surface:"#ffffff"};
+  const F = '"BIZ UDPGothic","Hiragino Sans","Yu Gothic",sans-serif', FM = '"Shippori Mincho B1","Hiragino Mincho ProN",serif';
+  x.fillStyle = "#f3f6f5"; x.fillRect(0,0,W,H);
+  x.fillStyle = col.ink; x.textBaseline = "top"; x.textAlign = "left";
+  x.font = `800 52px ${FM}`; x.fillText("Tsumitate Goal", 70, 60);
+  x.font = `26px ${F}`; x.fillStyle = col.muted; x.fillText("何歳から積み立てると、60歳・65歳・70歳の日にいくら？", 70, 128);
+  const d = new Date(); x.textAlign = "right"; x.fillText(`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日の試算`, W - 70, 72);
+  x.textAlign = "left"; x.fillStyle = col.ink; x.font = `bold 28px ${F}`;
+  const cond = `${S.startAge}歳から 毎月${manSen(S.monthly)}${S.lump ? "・はじめに" + manSen(S.lump) : ""}${S.stopAge < 70 ? "・" + S.stopAge + "歳で積立をやめる" : ""}`;
+  x.fillText(cond, 70, 190);
+  // ゴールの表
+  let y = 250; const cols = [70, 330, 620, 910];
+  x.font = `bold 24px ${F}`; x.fillStyle = col.muted;
+  ["ゴール", `利回り${S.rateA.toFixed(1)}%（基準）`, `利回り${S.rateB.toFixed(1)}%（現実想定）`, "元本（利息なし）"].forEach((t, k) => x.fillText(t, cols[k], y));
+  y += 44; x.strokeStyle = col.rule; x.lineWidth = 2;
+  GOALS.forEach(g => { x.beginPath(); x.moveTo(70, y - 10); x.lineTo(W - 70, y - 10); x.stroke();
+    x.fillStyle = col.ink; x.font = `800 38px ${FM}`; x.fillText(g.age + "歳", cols[0], y);
+    if (g.age <= S.startAge){ x.font = `24px ${F}`; x.fillStyle = col.muted; x.fillText("対象外", cols[1], y + 8); y += 70; return; }
+    const pa = at(last.A, g.age), pb = at(last.B, g.age);
+    x.font = `bold 40px ${F}`; x.fillStyle = col.s5; x.fillText(fmtYen(pa.value), cols[1], y);
+    x.fillStyle = col.s3; x.fillText(fmtYen(pb.value), cols[2], y);
+    x.fillStyle = col.ink; x.font = `34px ${F}`; x.fillText(fmtYen(pa.cost), cols[3], y + 4);
+    y += 70; });
+  // 図
+  y += 10; const ch = document.getElementById("incTax").checked ? 640 : 760;
+  x.save(); x.translate(50, y); drawChart(x, W - 100, ch, col, last.chartData, {fs: 22, padL: 110, bg: "#ffffff"}); x.restore();
+  y += ch + 20;
+  x.font = `22px ${F}`; let lx = 70;
+  [[col.s5, last.la + "（基準）"], [col.s3, last.lb + "（現実想定）"], [col.s0, "元本"]].forEach(([c, t]) => { x.fillStyle = c; x.fillRect(lx, y + 10, 30, 6); x.fillStyle = col.ink; x.fillText(t, lx + 40, y); lx += x.measureText(t).width + 90; });
+  y += 56;
+  // NISA
+  x.font = `bold 26px ${F}`; x.fillStyle = col.ink; x.fillText("NISA（生涯1,800万円・元本で数える）", 70, y); y += 40;
+  x.font = `24px ${F}`; x.fillStyle = col.muted;
+  x.fillText(last.A.fullAt ? `${Math.floor(last.A.fullAt)}歳${Math.round((last.A.fullAt%1)*12)}か月で生涯枠を使い切り、そのあとは課税口座の計算です。` : "70歳まで続けても、生涯枠の中に収まります。", 70, y); y += 56;
+  // 税金
+  if (document.getElementById("incTax").checked && lastTax){
+    x.font = `bold 26px ${F}`; x.fillStyle = col.ink; x.fillText(`副業と税金（2026年分の概算・社会保険料${S.siRate.toFixed(1)}%）`, 70, y); y += 40;
+    x.font = `24px ${F}`; x.fillStyle = col.ink;
+    x.fillText(`本業の年収（額面）${yen(S.mainIncome)}　副業の${sideType==="kyuyo"?"収入（給与）":"所得"} ${yen(S.sideIncome)}`, 70, y); y += 38;
+    x.fillText(`手取り：本業だけ ${yen(lastTax.base.net)} → 本業＋副業 ${yen(lastTax.both.net)}`, 70, y); y += 38;
+    x.fillStyle = col.s5; x.font = `bold 26px ${F}`;
+    x.fillText(`副業でふえる手取り ${yen(lastTax.sideNet)}（ふえる税金 ${yen(lastTax.addTax)}）→ ${S.saveRatio}%で毎月 ${manSen(lastTax.monthly)}`, 70, y); y += 56;
+  }
+  // 注意
+  x.font = `19px ${F}`; x.fillStyle = col.muted;
+  const notes = ["目安の計算です。将来の成果を約束するものではなく、特定の商品をすすめるものではありません。投資は元本割れすることがあります。",
+    "利回りは毎年同じ・月ごとの複利・毎月末に積立。手数料・為替・年金は入れていません。税金は概算で、正確な額は税務署・税理士へ。"];
+  notes.forEach(t => { x.fillText(t, 70, H - 110 + notes.indexOf(t) * 32); });
+  return c;
+}
+function canvasBlob(c, type, q){ return new Promise(r => c.toBlob(r, type, q)); }
+async function jpegToPdf(jpegBlob, wpx, hpx){
+  const img = new Uint8Array(await jpegBlob.arrayBuffer());
+  const enc = new TextEncoder(), parts = [], offs = []; let len = 0;
+  const push = p => { const b = typeof p === "string" ? enc.encode(p) : p; parts.push(b); len += b.length; };
+  const PW = 595.28, PH = 841.89, content = `q ${PW} 0 0 ${PH} 0 0 cm /Im0 Do Q`;
+  push("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n".replace(/[\u0080-ÿ]/g, "A"));
+  const obj = (n, body) => { offs[n] = len; push(`${n} 0 obj\n`); body(); push("\nendobj\n"); };
+  obj(1, () => push("<< /Type /Catalog /Pages 2 0 R >>"));
+  obj(2, () => push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>"));
+  obj(3, () => push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>`));
+  obj(4, () => push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`));
+  obj(5, () => { push(`<< /Type /XObject /Subtype /Image /Width ${wpx} /Height ${hpx} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${img.length} >>\nstream\n`); push(img); push("\nendstream"); });
+  const xref = len;
+  let t = "xref\n0 6\n0000000000 65535 f \n"; for (let k = 1; k <= 5; k++) t += String(offs[k]).padStart(10, "0") + " 00000 n \n";
+  push(t + `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+  return new Blob(parts, {type: "application/pdf"});
+}
+function showPreview(url){ const p = document.getElementById("preview"); document.getElementById("previewImg").src = url; p.hidden = false; }
+async function offer(filename, blob){
+  if (window.claude && typeof window.claude.use === "function"){
+    let dl = null; try { dl = await window.claude.use("downloads"); } catch(e) {}
+    if (dl){ try { await dl.save({filename, data: blob}); toast("保存しました"); return true; }
+      catch(e){ if (e && e.code === "declined"){ toast("保存をやめました"); return true; } } }
+    return false;
+  }
+  try { const u = URL.createObjectURL(blob), a = document.createElement("a"); a.href = u; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); toast("保存しました"); return true; } catch(e) { return false; }
+}
+function stamp(){ const d = new Date(); return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`; }
+async function doSave(kind){
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  const c = exportCanvas(), url = c.toDataURL("image/png");
+  showPreview(url);
+  let ok;
+  if (kind === "png") ok = await offer(`積立シミュレーション_${stamp()}.png`, await canvasBlob(c, "image/png"));
+  else ok = await offer(`積立シミュレーション_${stamp()}.pdf`, await jpegToPdf(await canvasBlob(c, "image/jpeg", .92), c.width, c.height));
+  if (!ok) toast("下の画像を長押し（右クリック）で保存できます");
+}
+document.getElementById("bPng").addEventListener("click", () => doSave("png"));
+document.getElementById("bPdf").addEventListener("click", () => doSave("pdf"));
+function summaryText(){
+  const L = [`【積立の試算】${S.startAge}歳から毎月${manSen(S.monthly)}${S.lump ? "（はじめに" + manSen(S.lump) + "）" : ""}`];
+  GOALS.forEach(g => { if (g.age <= S.startAge) return; const pa = at(last.A, g.age), pb = at(last.B, g.age);
+    L.push(`${g.age}歳：${S.rateA.toFixed(1)}%で${fmtYen(pa.value)}／${S.rateB.toFixed(1)}%で${fmtYen(pb.value)}／元本${fmtYen(pa.cost)}`); });
+  L.push(last.A.fullAt ? `NISAの生涯枠は${Math.floor(last.A.fullAt)}歳ごろに使い切る` : "NISAの生涯枠（1,800万円）に収まる");
+  L.push("※目安の計算です。将来の成果を約束するものではありません。");
+  return L.join("\n"); }
+document.getElementById("bCopy").addEventListener("click", async () => {
+  const t = summaryText(), ta = document.getElementById("copyArea"); ta.value = t;
+  try { await navigator.clipboard.writeText(t); toast("コピーしました"); ta.hidden = true; }
+  catch(e){ ta.hidden = false; ta.focus(); ta.select(); toast("文字を選びました。コピーしてください"); }
+});
+let tt; function toast(m){ const el = document.getElementById("toast"); el.textContent = m; el.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => el.classList.remove("on"), 2600); }
+
+/* ====== はじめ ====== */
+buildControls(); render();
+try { const t = localStorage.getItem(STORE_KEY + "-tab"); if (t && document.getElementById("tab-" + t)) showTab(t); } catch(e) {}
+window.addEventListener("resize", paintChart);
+if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", paintChart);
+new MutationObserver(paintChart).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(paintChart);
+</script>
+
+</body></html>
