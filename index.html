@@ -133,6 +133,18 @@ details.src ul{margin:4px 0 0;padding-left:18px} details.src li{margin-bottom:4p
 .sw b{font-weight:600;color:var(--ink);min-width:2.5em}
 .infl .hint{margin-top:8px}
 #ctl-sim-infl.off{opacity:.4;pointer-events:none}
+/* 切り崩しのタブ */
+#wdChart{width:100%;height:340px;display:block;touch-action:pan-y}
+@media (max-width:620px){#wdChart{height:280px}}
+.kpis.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpis.two .v{font-size:clamp(20px,4.2vw,28px)}
+.wd-sub{font-size:14px;font-weight:500;margin:14px 0 4px;color:var(--ink)}
+#wdCmp td,#wdCost td,#wdCmp th,#wdCost th{white-space:normal;line-height:1.45}
+#wdCmp td:first-child{white-space:nowrap}
+#wdCost td:not(:first-child){white-space:nowrap}
+.judge{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:13px}
+.wd-fees{margin-top:8px;border-top:1px solid var(--rule);padding-top:12px}
+.wd-fees h3{margin:0 0 2px;font-size:15px;color:var(--ink)}
 .real{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:13px;text-align:center}
 .real b{font-weight:600}
 .brand small{font:500 12px var(--f-body);color:var(--muted);letter-spacing:0;margin-left:2px}
@@ -194,6 +206,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
 </header>
 <nav class="tabs" role="tablist" aria-label="切りかえ">
   <button role="tab" aria-selected="true" data-tab="sim"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M5 16l5-5 4 3 6-7"/></svg>積立</button>
+  <button role="tab" aria-selected="false" data-tab="wd"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M5 10l5 5 4-3 6 6"/></svg>切り崩し</button>
   <button role="tab" aria-selected="false" data-tab="tax"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>副業と税金</button>
   <button role="tab" aria-selected="false" data-tab="nisa"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M9 12l2 2 4-4"/></svg>NISA</button>
   <button role="tab" aria-selected="false" data-tab="save"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>保存</button>
@@ -236,6 +249,55 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
         <p class="hint">物の値段は、年々上がっていくことがあります。お金の額が同じでも、物の値段が上がると、買える物は少なくなります。オンにすると、将来の金額が<b>「今のお金に直すと、いくら分か」</b>も出ます（日本銀行は、物価が毎年2%上がることを目標にしています）。</p>
         <p class="hint" id="inflEx"></p>
         <div id="ctl-sim-infl"></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="tab" id="tab-wd" role="tabpanel">
+  <div class="dash">
+    <div>
+      <div class="card">
+        <div class="kpis two" id="wdKpis"></div>
+        <p class="kpimeta" id="wdMeta"></p>
+      </div>
+      <div class="card chartcard">
+        <h2>残りのお金（124歳まで）</h2>
+        <canvas id="wdChart" aria-label="年齢ごとの残りのお金の線の図"></canvas>
+        <div class="legend">
+          <span><i style="background:var(--s5)"></i>基準の利回り</span>
+          <span><i style="background:var(--s3)"></i>堅実想定の利回り</span>
+        </div>
+        <p class="note-strip">124歳＝日本の最高齢（114歳・2026年9月 厚生労働省の発表）＋10歳。図に触れると、その年齢の残りが出ます。</p>
+      </div>
+      <div class="card chartcard">
+        <h2>毎月と年に1回、どちらがいい？</h2>
+        <div class="scrollx"><table class="ledger" id="wdCmp"></table></div>
+        <p class="judge" id="wdJudge"></p>
+        <h3 class="wd-sub">かかるお金（差し引いて計算しています）</h3>
+        <div class="scrollx"><table class="ledger" id="wdCost"></table></div>
+        <p class="hint">利回りは毎年同じとした計算です。実際は値上がり・値下がりがあり、値下がりした時期に多く売ると、早くなくなることがあります。</p>
+      </div>
+      <div class="qa panel">
+        <h2>よくある質問</h2>
+        <details><summary>引退して切り崩すとき、一度に全部出さないといけませんか？</summary><p><b>いいえ。</b>必要な分だけ、少しずつ売って現金にできます。証券会社によっては、毎月決まった額などを自動で売る「定期売却」のしくみがあり、NISA の口座で使える会社もあります。使えるかどうかと手数料は、証券会社で確かめてください。</p></details>
+        <details><summary>NISA（非課税）でも、手数料はかかりますか？</summary><p><b>かかります。</b>NISA で0になるのは「税金」だけです。次の費用は NISA でもかかります。</p>
+          <ul><li>信託報酬：投資信託を持っている間、ずっと引かれる運用の手数料</li><li>信託財産留保額：売るときに引かれる費用（0%の商品も多い）</li><li>出金手数料：証券会社から銀行へ移すときの手数料（無料の会社も多い）</li></ul>
+          <p>このタブでは、この3つと、課税口座の利益にかかる税金（20.315%）を差し引いて計算しています。</p></details>
+        <details><summary>毎月と年に1回、どちらがお得ですか？</summary><p>多くの場合、<b>毎月のほうが少しだけ長持ち</b>します。年に1回だと1年分を先にまとめて売るので、その分が運用されない期間が長くなるためです。売る日が分かれるので、たまたま値段が安い日に全部売ってしまう心配も小さくなります。</p><p>年に1回のよい所は、手間が少ないことです。1回ごとに出金手数料がかかる場合は、回数が少ないほうが安く済みます。入れた条件での差は、上の表で分かります。</p></details>
+        <details><summary>売った分の NISA の枠はどうなりますか？</summary><p>新しい NISA では、売った分（買った値段の分）の枠が、翌年に戻ります。</p></details>
+      </div>
+    </div>
+    <aside class="card side">
+      <h2>切り崩しの条件</h2>
+      <p class="sub">積立のタブで入れた条件の結果から始めます。</p>
+      <div id="ctl-wd"></div>
+      <div class="ctl"><div class="row"><label>受け取り方</label></div>
+        <div class="seg"><label><input type="radio" name="wdFreq" value="m"> 毎月</label><label><input type="radio" name="wdFreq" value="y"> 年に1回（1年分をまとめて）</label></div></div>
+      <div class="wd-fees">
+        <h3>手数料</h3>
+        <p class="hint">NISA でもかかる費用です。税金は、課税口座（NISA の枠を超えた分）の利益にだけ 20.315% かかる計算です。</p>
+        <div id="ctl-wd-fee"></div>
       </div>
     </aside>
   </div>
@@ -306,9 +368,9 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
   <b>ご注意</b>
   <ul>
     <li>このツールは、条件を入れて計算する<b>目安</b>です。将来の運用の成果を約束するものではなく、特定の商品を勧めるものでもありません。投資は元本割れすることがあります。</li>
-    <li>利回りは毎年同じ（月ごとの複利・毎月末に積立）として計算しています。手数料（信託報酬）・為替・年金は入れていません。</li>
+    <li>利回りは毎年同じ（月ごとの複利・毎月末に積立）として計算しています。積立のタブでは、手数料（信託報酬）・為替・年金は入れていません。切り崩しのタブでは、入れた手数料と課税口座の税金を差し引いています（為替・年金は入れていません）。</li>
     <li>税金は2026年分のルール（基礎控除・給与所得控除の引き上げ）をもとにした概算です。扶養・保険・ふるさと納税などの控除は入れていません。正確な金額は税務署や税理士にご確認ください。</li>
-    <li>参考：<a href="https://www.fsa.go.jp/policy/nisa2/" target="_blank" rel="noopener">金融庁 NISA特設ウェブサイト</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm" target="_blank" rel="noopener">国税庁 給与所得控除</a>／<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/jigyounushi/page09_00001.html" target="_blank" rel="noopener">厚生労働省 高年齢者の雇用</a></li>
+    <li>参考：<a href="https://www.fsa.go.jp/policy/nisa2/" target="_blank" rel="noopener">金融庁 NISA特設ウェブサイト</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm" target="_blank" rel="noopener">国税庁 給与所得控除</a>／<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/jigyounushi/page09_00001.html" target="_blank" rel="noopener">厚生労働省 高年齢者の雇用</a>／<a href="https://www.nippon.com/ja/japan-data/h02902/" target="_blank" rel="noopener">100歳以上高齢者（厚生労働省の発表・2026年）</a></li>
   </ul>
 </footer>
 
@@ -373,11 +435,17 @@ const CTL = {
   mainIncome:{label:"本業の年収（額面）", min:0, max:20000000, step:10000, v:4000000, exact:true, fmt:v=>manSen(v), box:"tax", hint:"ボーナスも含めた1年分。税金を引く前の金額です。右の箱には1円単位で入れられます"},
   sideIncome:{label:"副業の年間収入（額面）", min:0, max:5000000, step:10000, v:600000, exact:true, fmt:v=>manSen(v), box:"tax", hint:"右の箱には1円単位で入れられます"},
   siRate:{label:"社会保険料の割合", min:0, max:20, step:0.1, v:15, fmt:v=>v.toFixed(1)+"%", box:"tax", hint:"会社員は15%前後（40歳以上は介護保険料で約0.8%増えます）"},
-  saveRatio:{label:"副業の手取りのうち積立に回す割合", min:0, max:100, step:5, v:50, fmt:v=>v+"%", box:"tax"}
+  saveRatio:{label:"副業の手取りのうち積立に回す割合", min:0, max:100, step:5, v:50, fmt:v=>v+"%", box:"tax"},
+  wdAge:{label:"切り崩しを始める年齢", min:19, max:70, step:1, v:65, fmt:v=>v+"歳", box:"wd", hint:"この年齢の積立の結果から始めます（積立はこの年齢でやめる計算です）"},
+  wdMonthly:{label:"毎月受け取る額（手取り）", min:10000, max:1000000, step:1000, v:150000, exact:true, fmt:v=>manSen(v), box:"wd", hint:"手数料や税金を引いたあとに受け取る額です。右の箱には1円単位で入れられます"},
+  fundFee:{label:"信託報酬（年）", min:0, max:2, step:0.01, v:0.1, fmt:v=>v.toFixed(2)+"%", box:"wd-fee", hint:"投資信託を持っている間、ずっと引かれる運用の手数料です。NISA でもかかります。商品の説明書（目論見書）で確かめてください"},
+  sellFee:{label:"売るときの費用（信託財産留保額）", min:0, max:0.5, step:0.05, v:0, fmt:v=>v.toFixed(2)+"%", box:"wd-fee", hint:"売るたびに、売った額から引かれる費用です。0%の商品も多いです。NISA でもかかります"},
+  cashFee:{label:"出金手数料（1回）", min:0, max:1000, step:10, v:0, fmt:v=>yen(v), box:"wd-fee", hint:"証券会社から銀行へお金を移すときの手数料です。無料の会社も多いです"}
 };
 let sideType = "kyuyo"; // kyuyo = バイト・パート（給与）／zatsu = 個人事業主・業務委託など（事業所得・雑所得）
 let inflOn = false;     // 物価の上がり方も考えるか（オン・オフ）
 let selGoal = 65;       // いま大きく見せるゴールの年齢
+let wdFreq = "m";       // 切り崩しの受け取り方：m = 毎月／y = 年に1回
 const UI = window.UI || {};
 const S = {}; for (const k in CTL) S[k] = CTL[k].v;
 
@@ -388,8 +456,8 @@ try { const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
     // 2026-11-10 より前の保存：利回りの基準と物価の意味が変わったので、その3つは新しい値から始める
     const old = !saved.v2, skip = old ? ["rateA", "rateB", "infl"] : [];
     for (const k in CTL) if (typeof saved[k] === "number" && !skip.includes(k)) S[k] = clamp(saved[k], CTL[k].min, CTL[k].max);
-    if (saved.sideType) sideType = saved.sideType; if (saved.selGoal) selGoal = saved.selGoal; if (!old && typeof saved.inflOn === "boolean") inflOn = saved.inflOn; } } catch(e) {}
-function persist(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(Object.assign({v2:true, sideType, selGoal, inflOn}, S))); } catch(e) {} }
+    if (saved.sideType) sideType = saved.sideType; if (saved.wdFreq) wdFreq = saved.wdFreq; if (saved.selGoal) selGoal = saved.selGoal; if (!old && typeof saved.inflOn === "boolean") inflOn = saved.inflOn; } } catch(e) {}
+function persist(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(Object.assign({v2:true, sideType, selGoal, inflOn, wdFreq}, S))); } catch(e) {} }
 // 始める年齢より前のゴールは選べないので、次のゴールにずらす
 function goalAge(){ const ok = GOALS.filter(g => g.age > S.startAge); if (!ok.length) return null;
   return (ok.find(g => g.age === selGoal) || ok.find(g => g.age > selGoal) || ok[ok.length-1]).age; }
@@ -455,6 +523,7 @@ function setVal(k, v, exact){ const c = CTL[k];
 function syncControls(){
   for (const k in CTL){ const c = CTL[k];
     const r = document.getElementById("r-"+k), n = document.getElementById("n-"+k);
+    if (k === "wdAge"){ const lo = Math.min(70, S.startAge + 1); r.min = n.min = lo; if (S.wdAge < lo) S.wdAge = lo; }
     if (document.activeElement !== r) r.value = S[k];
     if (document.activeElement !== n) n.value = S[k];
     r.style.setProperty("--p", ((S[k] - r.min) / (r.max - r.min) * 100) + "%"); // 線の色をつける長さ
@@ -663,7 +732,7 @@ function render(){
   if (note) note.textContent = "図に触れると、その年齢の金額が出ます。";
   if (UI.sim) UI.sim({goals, sel, cur: goals.find(g => g.age === sel) || null, rA:S.rateA.toFixed(1), rB:S.rateB.toFixed(1), A, B:Bs, la, lb});
   paintChart();
-  renderTax(); renderNisa(A, Bs);
+  renderTax(); renderNisa(A, Bs); renderWd();
 }
 let lastTax = null;
 function renderTax(){
@@ -722,12 +791,153 @@ function renderNisa(A, Bs){
     <p class="hint">普通の口座（課税口座）だと、利益の20.315%が税金になります。NISAの中の利益にはかかりません。</p>`;
 }
 
+/* ====== 切り崩し ====== */
+// 日本の最高齢（114歳・2026年9月15日 厚生労働省の発表）＋10歳まで計算する
+const OLDEST_JP = 114, WD_MAX_AGE = OLDEST_JP + 10;
+// 積立の結果（始める年齢の時点）から、毎月（または年に1回）決まった手取りを受け取る。
+// 受け取る前に、売るときの費用・税金（課税口座の利益だけ）・出金手数料を足した分を売る。課税口座から先に売る（NISA の非課税を長く使うため）。
+// 持っている間は、利回りで増え、信託報酬が毎月（年率÷12）引かれる。
+function withdraw(simRes, freq){
+  const a0 = S.wdAge, p = at(simRes, a0);
+  const i = (simRes === last.A ? S.rateA : S.rateB) / 100 / 12, fee = S.fundFee / 100 / 12, sell = S.sellFee / 100;
+  let nV = p.nV, nC = p.nC, tV = p.tV, tC = p.tC;
+  const tot = {got:0, trust:0, sell:0, cash:0, tax:0};
+  const pts = [{age:a0, value:nV + tV}];
+  let outAge = null;
+  const months = (WD_MAX_AGE - a0) * 12;
+  for (let m = 0; m < months; m++){
+    const payDay = freq === "y" ? m % 12 === 0 : true;
+    if (payDay && outAge === null){
+      const want = freq === "y" ? S.wdMonthly * 12 : S.wdMonthly;
+      let need = want + S.cashFee, got = 0;
+      // 課税口座から売る
+      if (tV > 0 && need > 0){
+        const gr = Math.max(0, (tV - tC) / tV), keep = 1 - sell - gr * TAXABLE_RATE;
+        const g = Math.min(tV, need / keep), taxPaid = g * gr * TAXABLE_RATE, sellPaid = g * sell;
+        tC -= tC * (g / tV); tV -= g; got += g - taxPaid - sellPaid; need -= g - taxPaid - sellPaid;
+        tot.tax += taxPaid; tot.sell += sellPaid;
+      }
+      // 足りない分を NISA から売る
+      if (nV > 0 && need > 0.5){
+        const g = Math.min(nV, need / (1 - sell)), sellPaid = g * sell;
+        nC -= nC * (g / nV); nV -= g; got += g - sellPaid; need -= g - sellPaid;
+        tot.sell += sellPaid;
+      }
+      const cash = Math.min(S.cashFee, got); tot.cash += cash;
+      tot.got += Math.max(0, got - cash);
+      if (need > 0.5){ outAge = a0 + m / 12; nV = tV = 0; }
+    }
+    // 1か月ぶん増えて、信託報酬が引かれる
+    nV *= 1 + i; tV *= 1 + i;
+    const t1 = nV * fee, t2 = tV * fee; nV -= t1; tV -= t2; tot.trust += t1 + t2;
+    pts.push({age:a0 + (m + 1) / 12, value:Math.max(0, nV + tV)});
+  }
+  return {start:p.value, startN:p.nV, startT:p.tV, pts, outAge, left:nV + tV, tot, at:age => pts[Math.round((age - a0) * 12)]};
+}
+function ageText(x){ const y = Math.floor(x + 1e-9), mo = Math.round((x - y) * 12); return mo >= 12 ? (y + 1) + "歳" : y + "歳" + (mo ? mo + "か月" : ""); }
+let lastWd = null, wdHover = null;
+function renderWd(){
+  const host = document.getElementById("wdKpis"); if (!host || !last) return;
+  document.querySelectorAll("input[name=wdFreq]").forEach(el => { el.checked = el.value === wdFreq; });
+  const res = {
+    A:{m:withdraw(last.A, "m"), y:withdraw(last.A, "y")},
+    B:{m:withdraw(last.B, "m"), y:withdraw(last.B, "y")}
+  };
+  lastWd = res;
+  const f = wdFreq, A = res.A[f], B = res.B[f];
+  const out = w => w.outAge !== null ? `<span class="v num">${ageText(w.outAge)}</span><span class="l">でお金がなくなります</span>`
+    : `<span class="v num">${WD_MAX_AGE}歳でも残る</span><span class="l">残り 約${fmtYen(w.left)}</span>`;
+  host.innerHTML = `<div class="kpi a">${out(A)}<span class="l">${S.rateA.toFixed(1)}%・基準</span></div>
+    <div class="kpi b">${out(B)}<span class="l">${S.rateB.toFixed(1)}%・堅実想定</span></div>`;
+  document.getElementById("wdMeta").innerHTML = `<b>${S.wdAge}歳</b>の資産（積立の結果）は 基準 <b>${fmtYen(A.start)}</b>・堅実想定 <b>${fmtYen(B.start)}</b>。<br>ここから<b>${f === "y" ? "年に1回 " + manSen(S.wdMonthly * 12) : "毎月 " + manSen(S.wdMonthly)}</b>（手取り）を受け取る計算です。`;
+  // 費用の表
+  const nf = v => fmtYen(v);
+  const row = (name, k) => `<tr><td>${name}</td><td>${nf(A.tot[k])}</td><td>${nf(B.tot[k])}</td></tr>`;
+  document.getElementById("wdCost").innerHTML = `<thead><tr><th>${f === "y" ? "年に1回" : "毎月"}受け取る場合</th><th>基準 ${S.rateA.toFixed(1)}%</th><th>堅実 ${S.rateB.toFixed(1)}%</th></tr></thead><tbody>
+    ${row("受け取った合計（手取り）", "got")}${row("信託報酬", "trust")}${row("売るときの費用", "sell")}${row("出金手数料", "cash")}${row("税金（課税口座の利益）", "tax")}</tbody>`;
+  // 毎月と年1回のくらべ
+  const cmpCell = w => w.outAge !== null ? `<b>${ageText(w.outAge)}</b>でなくなる` : `${WD_MAX_AGE}歳で<br>約${fmtYen(w.left)}残る`;
+  const feeSum = w => w.tot.trust + w.tot.sell + w.tot.cash + w.tot.tax;
+  document.getElementById("wdCmp").innerHTML = `<thead><tr><th></th><th>毎月</th><th>年に1回</th></tr></thead><tbody>
+    <tr><td>基準 ${S.rateA.toFixed(1)}%</td><td>${cmpCell(res.A.m)}</td><td>${cmpCell(res.A.y)}</td></tr>
+    <tr><td>堅実 ${S.rateB.toFixed(1)}%</td><td>${cmpCell(res.B.m)}</td><td>${cmpCell(res.B.y)}</td></tr>
+    <tr><td>出金手数料<br>（堅実の合計）</td><td>${fmtYen(res.B.m.tot.cash)}</td><td>${fmtYen(res.B.y.tot.cash)}</td></tr></tbody>`;
+  const judge = (m, y) => {
+    if (m.outAge !== null && y.outAge !== null){ const d = m.outAge - y.outAge;
+      if (Math.abs(d) < 1/24) return "どちらもほぼ同じです";
+      return d > 0 ? `<b>毎月</b>のほうが 約${(d).toFixed(1)}年 長く受け取れます` : `<b>年に1回</b>のほうが 約${(-d).toFixed(1)}年 長く受け取れます`; }
+    if (m.outAge === null && y.outAge !== null) return "<b>毎月</b>なら最後まで足ります（年に1回だと途中でなくなります）";
+    if (m.outAge !== null && y.outAge === null) return "<b>年に1回</b>なら最後まで足ります（毎月だと途中でなくなります）";
+    const d = m.left - y.left; if (Math.abs(d) < 10000) return "どちらもほぼ同じです";
+    return d > 0 ? `<b>毎月</b>のほうが ${WD_MAX_AGE}歳の残りが 約${fmtYen(d)} 多くなります` : `<b>年に1回</b>のほうが ${WD_MAX_AGE}歳の残りが 約${fmtYen(-d)} 多くなります`; };
+  document.getElementById("wdJudge").innerHTML = `この条件では、基準 ${S.rateA.toFixed(1)}%：${judge(res.A.m, res.A.y)}。堅実 ${S.rateB.toFixed(1)}%：${judge(res.B.m, res.B.y)}。`;
+  paintWd();
+}
+// 切り崩しの線の図（始める年齢〜124歳）
+const wcv = document.getElementById("wdChart");
+let wdL = 58, wdR = 12;
+function paintWd(){
+  if (!wcv || !lastWd) return;
+  const dpr = window.devicePixelRatio || 1, rc = wcv.getBoundingClientRect();
+  if (!rc.width || !rc.height) return;
+  wcv.width = Math.round(rc.width * dpr); wcv.height = Math.round(rc.height * dpr);
+  const x = wcv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0);
+  const col = themeColors(), W = rc.width, H = rc.height, fs = W < 500 ? 11 : 12, font = UI.chartFont || "sans-serif";
+  const A = lastWd.A[wdFreq], B = lastWd.B[wdFreq], a0 = S.wdAge, a1 = WD_MAX_AGE;
+  // 上の目盛りは、始めのお金の2.5倍までにする（基準がとても大きくなると、堅実の線が見えなくなるため）。はみ出した線は切る
+  const realMax = Math.max(1, ...A.pts.map(p => p.value), ...B.pts.map(p => p.value)), cap = Math.max(A.start, B.start, 1) * 2.5;
+  const ymaxRaw = Math.min(realMax, cap), clipped = realMax > cap;
+  const step = niceStep(ymaxRaw), ymax = Math.ceil(ymaxRaw / step) * step;
+  x.font = `${fs}px ${font}`;
+  let labW = 0; for (let v = step; v <= ymax + 1; v += step) labW = Math.max(labW, x.measureText(yLabel(v)).width);
+  const L = Math.max(36, Math.ceil(labW) + 12), R = 12, T = clipped ? 24 : 14, Bm = Math.round(fs * 2.6); wdL = L; wdR = R;
+  const w = W - L - R, h = H - T - Bm, X = a => L + (a - a0) / (a1 - a0) * w, Y = v => T + h - v / ymax * h;
+  x.clearRect(0,0,W,H); x.textBaseline = "middle";
+  for (let v = 0; v <= ymax + 1; v += step){ const yy = Math.round(Y(v)) + .5;
+    x.strokeStyle = col.rule; x.lineWidth = 1; x.setLineDash(v ? [3,4] : []); x.beginPath(); x.moveTo(L, yy); x.lineTo(L + w, yy); x.stroke();
+    x.fillStyle = col.muted; x.textAlign = "right"; x.fillText(v ? yLabel(v) : "0", L - 8, yy); }
+  x.setLineDash([]);
+  // 下の目盛り：始める年齢・90・100・110・124歳
+  x.textBaseline = "top"; const ticks = [a0]; [80, 90, 100, 110].forEach(t => { if (t - a0 >= 6 && a1 - t >= 6) ticks.push(t); }); ticks.push(a1);
+  ticks.forEach((t, k) => { x.fillStyle = col.muted; x.textAlign = k === 0 ? "left" : k === ticks.length - 1 ? "right" : "center"; x.fillText(t + "歳", X(t), T + h + 9);
+    if (k && k < ticks.length - 1){ x.strokeStyle = col.rule; x.setLineDash([2,3]); x.beginPath(); x.moveTo(Math.round(X(t)) + .5, T); x.lineTo(Math.round(X(t)) + .5, T + h); x.stroke(); x.setLineDash([]); } });
+  const path = arr => { x.beginPath(); arr.forEach((p, k) => { const px = X(p.age), py = Y(p.value); k ? x.lineTo(px, py) : x.moveTo(px, py); }); };
+  x.save(); x.beginPath(); x.rect(L, T - 2, w + 2, h + 4); x.clip();
+  path(A.pts); x.lineTo(X(a1), Y(0)); x.lineTo(X(a0), Y(0)); x.closePath();
+  const gr = x.createLinearGradient(0, T, 0, T + h); gr.addColorStop(0, col.fill); gr.addColorStop(1, col.fillEnd); x.fillStyle = gr; x.fill();
+  x.lineJoin = "round"; x.lineCap = "round"; const lw = (UI.chart && UI.chart.lw) || 2.6;
+  path(B.pts); x.strokeStyle = col.s3; x.lineWidth = lw - .5; x.stroke();
+  path(A.pts); x.strokeStyle = col.s5; x.lineWidth = lw; x.stroke();
+  x.restore();
+  if (clipped){ x.fillStyle = col.muted; x.textAlign = "right"; x.textBaseline = "top"; x.font = `${fs - 1}px ${font}`; x.fillText("↑ 線は上に続きます", L + w, 2); x.font = `${fs}px ${font}`; }
+  // なくなる年齢に印
+  [[A, col.s5], [B, col.s3]].forEach(([r, c]) => { if (r.outAge === null) return; const px = X(r.outAge), py = Y(0);
+    x.fillStyle = col.card; x.beginPath(); x.arc(px, py, lw + 3, 0, 7); x.fill(); x.fillStyle = c; x.beginPath(); x.arc(px, py, lw + 1, 0, 7); x.fill(); });
+  // さわった年齢
+  if (wdHover != null){ const ag = clamp(Math.round(wdHover), a0, a1), pa = A.at(ag), pb = B.at(ag), px = X(ag);
+    x.strokeStyle = col.ink; x.globalAlpha = .35; x.beginPath(); x.moveTo(px, T); x.lineTo(px, T + h); x.stroke(); x.globalAlpha = 1;
+    [[pa.value, col.s5], [pb.value, col.s3]].forEach(([v, c]) => { x.fillStyle = c; x.beginPath(); x.arc(px, Y(v), 4.5, 0, 7); x.fill(); });
+    const lines = [[ag + "歳のときの残り", col.tipInk], ["基準 " + S.rateA.toFixed(1) + "%　" + fmtYen(pa.value), col.s5], ["堅実 " + S.rateB.toFixed(1) + "%　" + fmtYen(pb.value), col.s3]];
+    x.font = `bold ${fs}px ${font}`; const bw = Math.max(...lines.map(l => x.measureText(l[0]).width)) + 20, bh = lines.length * (fs + 7) + 12;
+    let bx = px + 12; if (bx + bw > L + w) bx = px - 12 - bw; if (bx < 2) bx = 2; const by = T + 8;
+    x.fillStyle = col.surface; x.strokeStyle = col.rule; x.lineWidth = 1; x.beginPath(); x.roundRect ? x.roundRect(bx, by, bw, bh, 10) : x.rect(bx, by, bw, bh); x.fill(); x.stroke();
+    x.textAlign = "left"; x.textBaseline = "top"; lines.forEach((l, k) => { x.fillStyle = l[1]; x.fillText(l[0], bx + 10, by + 8 + k * (fs + 7)); }); }
+}
+if (wcv){
+  const pAge = e => { const rc = wcv.getBoundingClientRect(); return S.wdAge + clamp((e.clientX - rc.left - wdL) / (rc.width - wdL - wdR), 0, 1) * (WD_MAX_AGE - S.wdAge); };
+  wcv.addEventListener("pointermove", e => { wdHover = pAge(e); paintWd(); });
+  wcv.addEventListener("pointerdown", e => { wdHover = pAge(e); paintWd(); });
+  wcv.addEventListener("pointerleave", e => { if (e.pointerType === "mouse"){ wdHover = null; paintWd(); } });
+}
+document.querySelectorAll("input[name=wdFreq]").forEach(el => el.addEventListener("change", () => { wdFreq = el.value; persist(); renderWd(); }));
+
 /* ====== タブ ====== */
 function showTab(name){
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false"));
   document.querySelectorAll("section.tab").forEach(s => s.classList.toggle("on", s.id === "tab-" + name));
   try { localStorage.setItem(STORE_KEY + "-tab", name); } catch(e) {}
   if (name === "sim") requestAnimationFrame(paintChart);
+  if (name === "wd") requestAnimationFrame(paintWd);
   window.scrollTo({top:0});
 }
 document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
@@ -847,7 +1057,7 @@ let tt; function toast(m){ const el = document.getElementById("toast"); el.textC
 /* ====== はじめ ====== */
 buildControls(); render();
 try { const t = localStorage.getItem(STORE_KEY + "-tab"); if (t && document.getElementById("tab-" + t)) showTab(t); } catch(e) {}
-window.addEventListener("resize", paintChart);
+window.addEventListener("resize", () => { paintChart(); paintWd(); });
 if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", paintChart);
 new MutationObserver(paintChart).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(paintChart);
