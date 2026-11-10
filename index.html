@@ -71,7 +71,9 @@ section.tab{display:none} section.tab.on{display:block}
 
 /* 積立のタブ */
 .dash{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start}
-@media (max-width:960px){.dash{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:960px){.dash{grid-template-columns:minmax(0,1fr)}
+  /* 1列のときは「答えの数字 → 条件 → 図・表 → よくある質問」の順にする（条件が質問より下にあると、探しにくいため） */
+  .dash>div{display:contents} .dash>div>*{margin-top:0!important;order:3} .dash>div>:first-child{order:1} .dash>aside{order:2}}
 .card{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:18px;box-shadow:var(--card-shadow)}
 .goalsel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:16px;max-width:420px}
 .goalsel button{appearance:none;font:600 15px/1.25 var(--f-num);color:var(--muted);background:transparent;border:1px solid var(--rule-strong);border-radius:14px;padding:7px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center}
@@ -95,6 +97,8 @@ section.tab{display:none} section.tab.on{display:block}
 .legend span{display:flex;align-items:center;gap:7px}
 .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
 .legend b{font-weight:400}
+#wdNote{text-align:left}
+.legend i.dash-i{width:16px;height:0;border-radius:0;border-top:2px dashed var(--muted)}
 .note-strip{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 0}
 .side h2{font-size:17px;font-weight:500;margin:0 0 4px}
 .side .sub{font-size:12px;color:var(--muted);margin:0 0 6px}
@@ -145,6 +149,10 @@ details.src ul{margin:4px 0 0;padding-left:18px} details.src li{margin-bottom:4p
 .judge{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:13px}
 .wd-fees{margin-top:8px;border-top:1px solid var(--rule);padding-top:12px}
 .wd-fees h3{margin:0 0 2px;font-size:15px;color:var(--ink)}
+.kpi .rv{display:block;font-size:12px;line-height:1.35;color:var(--muted);margin-top:4px}
+@media (max-width:420px){.kpi .rv{font-size:11px;letter-spacing:-.02em}}
+.infl-res{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:13px;color:var(--ink)}
+.infl-res b{font-weight:600}
 .real{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:13px;text-align:center}
 .real b{font-weight:600}
 .brand small{font:500 12px var(--f-body);color:var(--muted);letter-spacing:0;margin-left:2px}
@@ -229,6 +237,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
           <span><i style="background:var(--s5)"></i><b id="lg5">利回り5%</b></span>
           <span><i style="background:var(--s3)"></i><b id="lg3">利回り3%</b></span>
           <span><i style="background:var(--s0)"></i>元本（利息なし）</span>
+          <span id="lgReal" hidden><i class="dash-i"></i>点線＝今のお金に直すと</span>
         </div>
         <p class="note-strip" id="chartNote"></p>
       </div>
@@ -248,6 +257,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
           <label class="sw"><input type="checkbox" id="inflOn" role="switch" aria-label="物価の上がり方も考える"><span></span><b id="inflOnText">オフ</b></label></div>
         <p class="hint">物の値段は、年々上がっていくことがあります。お金の額が同じでも、物の値段が上がると、買える物は少なくなります。オンにすると、将来の金額が<b>「今のお金に直すと、いくら分か」</b>も出ます（日本銀行は、物価が毎年2%上がることを目標にしています）。</p>
         <p class="hint" id="inflEx"></p>
+        <p class="infl-res" id="inflRes" hidden></p>
         <div id="ctl-sim-infl"></div>
       </div>
     </aside>
@@ -268,7 +278,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
           <span><i style="background:var(--s5)"></i>基準の利回り</span>
           <span><i style="background:var(--s3)"></i>堅実想定の利回り</span>
         </div>
-        <p class="note-strip">124歳＝日本の最高齢（114歳・2026年9月 厚生労働省の発表）＋10歳。図に触れると、その年齢の残りが出ます。</p>
+        <p class="note-strip" id="wdNote">124歳＝日本の最高齢（114歳・2026年9月 厚生労働省の発表）＋10歳。図に触れると、その年齢の残りが出ます。</p>
       </div>
       <div class="card chartcard">
         <h2>毎月と年に1回、どちらがいい？</h2>
@@ -298,6 +308,11 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
         <h3>手数料</h3>
         <p class="hint">NISA でもかかる費用です。税金は、課税口座（NISA の枠を超えた分）の利益にだけ 20.315% かかる計算です。</p>
         <div id="ctl-wd-fee"></div>
+      </div>
+      <div class="infl">
+        <div class="infl-head"><h3>物価の上がり方も考える</h3>
+          <label class="sw"><input type="checkbox" id="inflOn2" role="switch" aria-label="物価の上がり方も考える（切り崩し）"><span></span><b id="inflOnText2">オフ</b></label></div>
+        <p class="hint">オンにすると、上の「毎月受け取る額」を<b>今のお金で</b>の額とみて、物価に合わせて毎年増やして受け取る計算にします。物価の上がり方（年◯%）は、積立のタブで変えられます。</p>
       </div>
     </aside>
   </div>
@@ -403,11 +418,12 @@ window.UI = {
   sim(v){
     const k = document.getElementById("kpis"), m = document.getElementById("kpimeta"), c = v.cur;
     if (!c){ k.innerHTML = `<div class="kpi" style="grid-column:1/-1"><span class="l">始める年齢が70歳なので、ゴールがありません</span></div>`; m.textContent = ""; return; }
-    k.innerHTML = `<div class="kpi"><span class="v num">${fmtYen(c.cost)}</span><span class="l">積み立てた元本</span></div>
-      <div class="kpi a"><span class="v num">${fmtYen(c.a)}</span><span class="l">${v.rA}%・基準</span></div>
-      <div class="kpi b"><span class="v num">${fmtYen(c.b)}</span><span class="l">${v.rB}%・堅実想定</span></div>`;
+    const rv = x => c.realA ? `<span class="rv">今のお金で<br>約${fmtYen(x)}</span>` : "";
+    k.innerHTML = `<div class="kpi"><span class="v num">${fmtYen(c.cost)}</span><span class="l">積み立てた元本</span>${rv(c.realCost)}</div>
+      <div class="kpi a"><span class="v num">${fmtYen(c.a)}</span><span class="l">${v.rA}%・基準</span>${rv(c.realA)}</div>
+      <div class="kpi b"><span class="v num">${fmtYen(c.b)}</span><span class="l">${v.rB}%・堅実想定</span>${rv(c.realB)}</div>`;
     m.innerHTML = `<b>${S.startAge}歳</b>から<b>${c.yrs}年</b>・毎月<b>${manSen(S.monthly)}</b>　増えた分 <b>+${fmtYen(c.gainA)}</b>`
-      + (c.realA ? `<div class="real">物価が毎年${S.infl.toFixed(1)}%上がる場合、今のお金に直すと<br>元本 約<b class="num">${fmtYen(c.realCost)}</b>・${v.rA}%で 約<b class="num">${fmtYen(c.realA)}</b>・${v.rB}%で 約<b class="num">${fmtYen(c.realB)}</b></div>` : "");
+      + (c.realA ? `<div class="real">「今のお金で」＝物価が毎年${S.infl.toFixed(1)}%上がる場合に、今の値段で考えるといくら分か</div>` : "");
   }
 };
 </script>
@@ -511,8 +527,8 @@ function buildControls(){
     el.checked = el.value === sideType;
     el.addEventListener("change", () => { sideType = el.value; render(); });
   });
-  const io = document.getElementById("inflOn");
-  if (io) io.addEventListener("change", () => { inflOn = io.checked; render(); });
+  ["inflOn", "inflOn2"].forEach(id => { const io = document.getElementById(id);
+    if (io) io.addEventListener("change", () => { inflOn = io.checked; render(); }); });
 }
 // exact = 数字の箱から入れたとき、1円単位のまま受け取る（額面など、きりのよい数字にならないもの）
 function setVal(k, v, exact){ const c = CTL[k];
@@ -681,6 +697,10 @@ function drawChart(ctx, W, H, col, data, opts){
   path(data.a, "cost"); ctx.strokeStyle = col.s0; ctx.lineWidth = Math.max(1.5, lw - 1); ctx.setLineDash(opts.costSolid ? [] : [6,5]); ctx.stroke(); ctx.setLineDash([]);
   path(data.b, "value"); ctx.strokeStyle = col.s3; ctx.lineWidth = lw - .5; ctx.stroke();
   path(data.a, "value"); ctx.strokeStyle = col.s5; ctx.lineWidth = lw; ctx.stroke();
+  // 物価がオンのとき：今のお金に直した額を点線で
+  if (data.ra){ ctx.setLineDash([5,5]); ctx.lineWidth = Math.max(1.5, lw - 1);
+    path(data.rb, "value"); ctx.strokeStyle = col.s3; ctx.stroke();
+    path(data.ra, "value"); ctx.strokeStyle = col.s5; ctx.stroke(); ctx.setLineDash([]); }
   // 選んでいるゴールの点
   if (sel && sel > xMin && opts.hover == null){ const m = Math.round((sel - xMin) * 12), x = X(sel);
     [[data.a[m].value, col.s5], [data.b[m].value, col.s3], [data.a[m].cost, col.s0]].forEach(([v, c]) => {
@@ -692,6 +712,7 @@ function drawChart(ctx, W, H, col, data, opts){
     ctx.strokeStyle = col.ink; ctx.globalAlpha = .35; ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, T + h); ctx.stroke(); ctx.globalAlpha = 1;
     [[pa.value, col.s5], [pb.value, col.s3], [pa.cost, col.s0]].forEach(([v, c]) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, Y(v), 4.5, 0, 7); ctx.fill(); });
     const lines = [[a + "歳のとき", col.tipInk], [data.la + "　" + fmtYen(pa.value), col.s5], [data.lb + "　" + fmtYen(pb.value), col.s3], ["元本　" + fmtYen(pa.cost), col.muted]];
+    if (data.ra) lines.push(["今のお金に直すと", col.tipInk], [data.la + "　約" + fmtYen(data.ra[m].value), col.s5], [data.lb + "　約" + fmtYen(data.rb[m].value), col.s3]);
     ctx.font = `bold ${fs}px ${font}`; const bw = Math.max(...lines.map(l => ctx.measureText(l[0]).width)) + 20, bh = lines.length * (fs + 7) + 12;
     let bx = x + 12; if (bx + bw > L + w) bx = x - 12 - bw; if (bx < 2) bx = 2; const by = T + 8;
     ctx.fillStyle = col.surface; ctx.strokeStyle = col.rule; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 10) : ctx.rect(bx, by, bw, bh); ctx.fill(); ctx.stroke();
@@ -720,7 +741,8 @@ function render(){
   const la = "利回り" + S.rateA.toFixed(1) + "%", lb = "利回り" + S.rateB.toFixed(1) + "%";
   const lg5 = document.getElementById("lg5"), lg3 = document.getElementById("lg3");
   if (lg5) lg5.textContent = la + "（基準）"; if (lg3) lg3.textContent = lb + "（堅実想定）";
-  last = {A, B:Bs, la, lb, chartData:{n:S.startAge, a:A.pts, b:Bs.pts, la, lb}};
+  const toReal = arr => arr.map(p => ({age:p.age, value:realValue(p.value, p.age)}));
+  last = {A, B:Bs, la, lb, chartData:{n:S.startAge, a:A.pts, b:Bs.pts, la, lb, ra: inflOn ? toReal(A.pts) : null, rb: inflOn ? toReal(Bs.pts) : null}};
   // 画面ごとの見せ方に渡す数字（ゴールごと）
   const goals = GOALS.map(g => { if (g.age <= S.startAge) return Object.assign({ok:false}, g);
     const pa = at(A, g.age), pb = at(Bs, g.age);
@@ -729,7 +751,11 @@ function render(){
   const sel = goalAge();
   document.querySelectorAll("[data-goal]").forEach(b => { const a = +b.dataset.goal; b.setAttribute("aria-pressed", a === sel ? "true" : "false"); b.disabled = a <= S.startAge; });
   const note = document.getElementById("chartNote");
-  if (note) note.textContent = "図に触れると、その年齢の金額が出ます。";
+  if (note) note.textContent = inflOn ? "点線は、物価が毎年" + S.infl.toFixed(1) + "%上がる場合に、今のお金に直した額です。図に触れると、その年齢の金額が出ます。" : "図に触れると、その年齢の金額が出ます。";
+  const lgR = document.getElementById("lgReal"); if (lgR) lgR.hidden = !inflOn;
+  const ir = document.getElementById("inflRes"), cg = goals.find(g => g.age === sel);
+  if (ir){ ir.hidden = !(inflOn && cg && cg.ok);
+    if (inflOn && cg && cg.ok) ir.innerHTML = `いまの条件では、${cg.age}歳の <b>${fmtYen(cg.a)}</b>（${S.rateA.toFixed(1)}%）は、今のお金に直すと 約<b>${fmtYen(cg.realA)}</b>分です。大きな数字の下と、図の点線にも出ています。`; }
   if (UI.sim) UI.sim({goals, sel, cur: goals.find(g => g.age === sel) || null, rA:S.rateA.toFixed(1), rB:S.rateB.toFixed(1), A, B:Bs, la, lb});
   paintChart();
   renderTax(); renderNisa(A, Bs); renderWd();
@@ -808,7 +834,7 @@ function withdraw(simRes, freq){
   for (let m = 0; m < months; m++){
     const payDay = freq === "y" ? m % 12 === 0 : true;
     if (payDay && outAge === null){
-      const want = freq === "y" ? S.wdMonthly * 12 : S.wdMonthly;
+      const want = wdAmount(Math.floor(m / 12)) * (freq === "y" ? 12 : 1);
       let need = want + S.cashFee, got = 0;
       // 課税口座から売る
       if (tV > 0 && need > 0){
@@ -832,8 +858,10 @@ function withdraw(simRes, freq){
     const t1 = nV * fee, t2 = tV * fee; nV -= t1; tV -= t2; tot.trust += t1 + t2;
     pts.push({age:a0 + (m + 1) / 12, value:Math.max(0, nV + tV)});
   }
-  return {start:p.value, startN:p.nV, startT:p.tV, pts, outAge, left:nV + tV, tot, at:age => pts[Math.round((age - a0) * 12)]};
+  return {start:p.value, startN:p.nV, startT:p.tV, pts, outAge, left:nV + tV, leftReal:(nV + tV) / Math.pow(1 + S.infl / 100, WD_MAX_AGE - S.startAge), tot, at:age => pts[Math.round((age - a0) * 12)]};
 }
+// 受け取る1か月分の額。物価がオンなら、入れた額を「今（積立を始めた年齢）のお金で」の額とみて、毎年物価の分だけ増やす
+function wdAmount(y){ return inflOn ? S.wdMonthly * Math.pow(1 + S.infl / 100, S.wdAge - S.startAge + y) : S.wdMonthly; }
 function ageText(x){ const y = Math.floor(x + 1e-9), mo = Math.round((x - y) * 12); return mo >= 12 ? (y + 1) + "歳" : y + "歳" + (mo ? mo + "か月" : ""); }
 let lastWd = null, wdHover = null;
 function renderWd(){
@@ -846,10 +874,20 @@ function renderWd(){
   lastWd = res;
   const f = wdFreq, A = res.A[f], B = res.B[f];
   const out = w => w.outAge !== null ? `<span class="v num">${ageText(w.outAge)}</span><span class="l">でお金がなくなります</span>`
-    : `<span class="v num">${WD_MAX_AGE}歳でも残る</span><span class="l">残り 約${fmtYen(w.left)}</span>`;
+    : `<span class="v num">${WD_MAX_AGE}歳でも残る</span><span class="l">残り 約${fmtYen(w.left)}</span>${inflOn ? `<span class="rv">今のお金で<br>約${fmtYen(w.leftReal)}</span>` : ""}`;
   host.innerHTML = `<div class="kpi a">${out(A)}<span class="l">${S.rateA.toFixed(1)}%・基準</span></div>
     <div class="kpi b">${out(B)}<span class="l">${S.rateB.toFixed(1)}%・堅実想定</span></div>`;
-  document.getElementById("wdMeta").innerHTML = `<b>${S.wdAge}歳</b>の資産（積立の結果）は 基準 <b>${fmtYen(A.start)}</b>・堅実想定 <b>${fmtYen(B.start)}</b>。<br>ここから<b>${f === "y" ? "年に1回 " + manSen(S.wdMonthly * 12) : "毎月 " + manSen(S.wdMonthly)}</b>（手取り）を受け取る計算です。`;
+  document.getElementById("wdMeta").innerHTML = `<b>${S.wdAge}歳</b>の資産（積立の結果）は 基準 <b>${fmtYen(A.start)}</b>・堅実想定 <b>${fmtYen(B.start)}</b>。<br>ここから<b>${f === "y" ? "年に1回 " + manSen(S.wdMonthly * 12) : "毎月 " + manSen(S.wdMonthly)}</b>（手取り）を受け取る計算です。`
+    + (inflOn ? `<br>物価がオンなので、この額は<b>今のお金で</b>の額です。${S.wdAge}歳では${f === "y" ? "年に1回 約" + manSen(Math.round(wdAmount(0) * 12 / 1000) * 1000) : "毎月 約" + manSen(Math.round(wdAmount(0) / 1000) * 1000)}を受け取り、そのあとも毎年${S.infl.toFixed(1)}%ずつ増やします。` : "");
+  // 図の下の説明：線が上に突き抜けるわけ
+  const wn = document.getElementById("wdNote");
+  if (wn){ const grow = A.start * S.rateA / 100, take = wdAmount(0) * 12;
+    wn.innerHTML = (A.outAge === null && grow > take
+      ? `基準の線が上に伸び続けるのは、${S.wdAge}歳の${fmtYen(A.start)}が1年で増える額（${S.rateA.toFixed(1)}%で 約${fmtYen(grow)}）が、1年に受け取る額（約${fmtYen(take)}）より多いためです。${inflOn ? "" : "受け取る額を物価に合わせて増やすと、結果は変わります（「物価の上がり方も考える」をオン）。"}毎年同じ利回りが続いた場合の計算で、実際は値下がりする年もあります。<br>`
+      : "") + `124歳＝日本の最高齢（114歳・2026年9月 厚生労働省の発表）＋10歳。図に触れると、その年齢の残りが出ます。`; }
+  const wl = document.querySelector('label[for="r-wdMonthly"]'); if (wl) wl.textContent = inflOn ? "毎月受け取る額（手取り・今のお金で）" : "毎月受け取る額（手取り）";
+  const io2 = document.getElementById("inflOn2"), it2 = document.getElementById("inflOnText2");
+  if (io2) io2.checked = inflOn; if (it2) it2.textContent = inflOn ? "オン" : "オフ";
   // 費用の表
   const nf = v => fmtYen(v);
   const row = (name, k) => `<tr><td>${name}</td><td>${nf(A.tot[k])}</td><td>${nf(B.tot[k])}</td></tr>`;
