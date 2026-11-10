@@ -93,6 +93,7 @@ section.tab{display:none} section.tab.on{display:block}
 .chartcard h2{font-size:14px;font-weight:500;color:var(--muted);margin:0 0 6px}
 #chart{width:100%;height:380px;display:block;touch-action:pan-y}
 @media (max-width:620px){#chart{height:300px}}
+[hidden]{display:none!important}
 .legend{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-top:8px}
 .legend span{display:flex;align-items:center;gap:7px}
 .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
@@ -246,11 +247,17 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
       <h2>条件を変えて試算</h2>
       <p class="sub">線を動かすか、右の箱に数字を入れてください。</p>
       <div id="ctl-sim"></div>
+      <div class="wd-fees">
+        <h3>手数料</h3>
+        <p class="hint">持っている間、毎月差し引きます。切り崩しのタブの「信託報酬」と同じ数字です（どちらで変えても、両方が変わります）。</p>
+        <div id="ctl-sim-fee"></div>
+        <p class="hint" id="simFeeRes"></p>
+      </div>
       <details class="src"><summary>利回りの数字の出どころ</summary><ul>
         <li>基準：<a href="https://www.msci.com/documents/10199/255599/msci-acwi-net.pdf" target="_blank" rel="noopener">MSCI 社の公式資料「MSCI ACWI Index (USD)」</a>（2026年10月30日現在）。2000年12月29日からの年平均 7.31%。小数第2位を切り捨てて 7.3% にしています。</li>
         <li>堅実想定：<a href="https://www.gpif.go.jp/topics/73509681gpif/2025_kaiken_siryou_.pdf" target="_blank" rel="noopener">GPIF の2025年度の運用状況（会見資料）</a>。2001〜2025年度の年平均 4.67%。同じように切り捨てて 4.6% にしています。</li>
         <li>参考：米国株式「S&amp;P 500」の直近10年の年平均は 15.34%、全世界株式（MSCI ACWI）は 12.39% です（各社の公式資料、2026年10月30日現在）。成績の良かった10年だけの数字なので、基準には使っていません。</li>
-        <li>どれも過去の成績です。これからも同じになるとは限らず、マイナスになる年もあります。手数料・為替・税金は入れていません。</li>
+        <li>どれも過去の成績です。これからも同じになるとは限らず、マイナスになる年もあります。指数の成績なので、手数料は入っていません。このツールでは、上の「信託報酬」を別に差し引いています。為替と税金は入れていません。</li>
       </ul></details>
       <div class="infl">
         <div class="infl-head"><h3>物価の上がり方も考える</h3>
@@ -306,7 +313,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
         <div class="seg"><label><input type="radio" name="wdFreq" value="m"> 毎月</label><label><input type="radio" name="wdFreq" value="y"> 年に1回（1年分をまとめて）</label></div></div>
       <div class="wd-fees">
         <h3>手数料</h3>
-        <p class="hint">NISA でもかかる費用です。税金は、課税口座（NISA の枠を超えた分）の利益にだけ 20.315% かかる計算です。</p>
+        <p class="hint">NISA でもかかる費用です。信託報酬は、積立のタブと同じ数字です（どちらで変えても、両方が変わります）。税金は、課税口座（NISA の枠を超えた分）の利益にだけ 20.315% かかる計算です。</p>
         <div id="ctl-wd-fee"></div>
       </div>
       <div class="infl">
@@ -383,7 +390,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
   <b>ご注意</b>
   <ul>
     <li>このツールは、条件を入れて計算する<b>目安</b>です。将来の運用の成果を約束するものではなく、特定の商品を勧めるものでもありません。投資は元本割れすることがあります。</li>
-    <li>利回りは毎年同じ（月ごとの複利・毎月末に積立）として計算しています。積立のタブでは、手数料（信託報酬）・為替・年金は入れていません。切り崩しのタブでは、入れた手数料と課税口座の税金を差し引いています（為替・年金は入れていません）。</li>
+    <li>利回りは毎年同じ（月ごとの複利・毎月末に積立）として計算しています。積立のタブでは、入れた信託報酬を毎月差し引いています（為替・年金は入れていません）。切り崩しのタブでは、入れた手数料と課税口座の税金を差し引いています（為替・年金は入れていません）。</li>
     <li>税金は2026年分のルール（基礎控除・給与所得控除の引き上げ）をもとにした概算です。扶養・保険・ふるさと納税などの控除は入れていません。正確な金額は税務署や税理士にご確認ください。</li>
     <li>参考：<a href="https://www.fsa.go.jp/policy/nisa2/" target="_blank" rel="noopener">金融庁 NISA特設ウェブサイト</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm" target="_blank" rel="noopener">国税庁 給与所得控除</a>／<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/jigyounushi/page09_00001.html" target="_blank" rel="noopener">厚生労働省 高年齢者の雇用</a>／<a href="https://www.nippon.com/ja/japan-data/h02902/" target="_blank" rel="noopener">100歳以上高齢者（厚生労働省の発表・2026年）</a></li>
   </ul>
@@ -454,7 +461,7 @@ const CTL = {
   saveRatio:{label:"副業の手取りのうち積立に回す割合", min:0, max:100, step:5, v:50, fmt:v=>v+"%", box:"tax"},
   wdAge:{label:"切り崩しを始める年齢", min:19, max:70, step:1, v:65, fmt:v=>v+"歳", box:"wd", hint:"この年齢の積立の結果から始めます（積立はこの年齢でやめる計算です）"},
   wdMonthly:{label:"毎月受け取る額（手取り）", min:10000, max:1000000, step:1000, v:150000, exact:true, fmt:v=>manSen(v), box:"wd", hint:"手数料や税金を引いたあとに受け取る額です。右の箱には1円単位で入れられます"},
-  fundFee:{label:"信託報酬（年）", min:0, max:2, step:0.01, v:0.1, fmt:v=>v.toFixed(2)+"%", box:"wd-fee", hint:"投資信託を持っている間、ずっと引かれる運用の手数料です。NISA でもかかります。商品の説明書（目論見書）で確かめてください"},
+  fundFee:{label:"信託報酬（年）", min:0, max:2, step:0.01, v:0.1, fmt:v=>v.toFixed(2)+"%", box:"wd-fee", mirror:"sim-fee", hint:"投資信託を持っている間、ずっと引かれる運用の手数料です。NISA でもかかります。商品の説明書（目論見書）で確かめてください"},
   sellFee:{label:"売るときの費用（信託財産留保額）", min:0, max:0.5, step:0.05, v:0, fmt:v=>v.toFixed(2)+"%", box:"wd-fee", hint:"売るたびに、売った額から引かれる費用です。0%の商品も多いです。NISA でもかかります"},
   cashFee:{label:"出金手数料（1回）", min:0, max:1000, step:10, v:0, fmt:v=>yen(v), box:"wd-fee", hint:"証券会社から銀行へお金を移すときの手数料です。無料の会社も多いです"}
 };
@@ -500,14 +507,17 @@ function yen(y){ return Math.round(y).toLocaleString("ja-JP") + "円"; }
 
 function buildControls(){
   for (const k in CTL){ const c = CTL[k];
+    // mirror＝同じ数字の欄を、別のタブにももう1つ出す（id の後ろに「2」。どちらを動かしても同じ数字が変わる）
+    [["", (UI.boxes && UI.boxes[k]) || c.box], ["2", c.mirror]].forEach(([sfx, box]) => {
+    if (!box) return;
+    const host = document.getElementById("ctl-" + box); if (!host) return;
     const label = (UI.labels && UI.labels[k]) || c.label;
-    const host = document.getElementById("ctl-" + ((UI.boxes && UI.boxes[k]) || c.box));
-    const d = document.createElement("div"); d.className = "ctl"; d.dataset.k = k;
+    const d = document.createElement("div"); d.className = "ctl"; d.dataset.k = k + sfx;
     const big = c.step >= 1000 ? 10 : c.step < 1 ? 5 : 1; // ＋−ボタン1回で動く量（お金は1万円、年齢や%は1目盛り）
-    const stepBtn = (s, t) => UI.steppers ? `<button type="button" class="stp" data-k="${k}" data-d="${s}" aria-label="${label}を${t}">${s > 0 ? "＋" : "−"}</button>` : "";
-    d.innerHTML = `<div class="row"><label for="r-${k}">${label}</label><span class="val num" id="v-${k}"></span></div>
-      <div class="bar">${stepBtn(-big, "減らす")}<input type="range" id="r-${k}" min="${c.min}" max="${c.max}" step="${c.step}">${stepBtn(big, "増やす")}
-      <input type="number" id="n-${k}" min="${c.min}" max="${c.max}" step="${c.exact ? 1 : c.step}" inputmode="${c.exact ? "numeric" : "decimal"}" aria-label="${label}（数字で入れる）"></div>
+    const stepBtn = (s, t) => UI.steppers ? `<button type="button" class="stp" data-k="${k}${sfx}" data-d="${s}" aria-label="${label}を${t}">${s > 0 ? "＋" : "−"}</button>` : "";
+    d.innerHTML = `<div class="row"><label for="r-${k}${sfx}">${label}</label><span class="val num" id="v-${k}${sfx}"></span></div>
+      <div class="bar">${stepBtn(-big, "減らす")}<input type="range" id="r-${k}${sfx}" min="${c.min}" max="${c.max}" step="${c.step}">${stepBtn(big, "増やす")}
+      <input type="number" id="n-${k}${sfx}" min="${c.min}" max="${c.max}" step="${c.exact ? 1 : c.step}" inputmode="${c.exact ? "numeric" : "decimal"}" aria-label="${label}（数字で入れる）"></div>
       ${c.hint && !UI.noHints ? `<p class="hint">${c.hint}</p>` : ""}`;
     d.querySelectorAll(".stp").forEach(b => b.addEventListener("click", () => setVal(k, S[k] + (+b.dataset.d) * c.step)));
     if (k === "sideIncome"){
@@ -522,6 +532,7 @@ function buildControls(){
     const r = d.querySelector("input[type=range]"), n = d.querySelector("input[type=number]");
     r.addEventListener("input", () => setVal(k, +r.value));
     n.addEventListener("change", () => { let v = +n.value; if (!isFinite(v)) v = S[k]; setVal(k, v, c.exact); });
+    });
   }
   document.querySelectorAll('input[name=sideType]').forEach(el => {
     el.checked = el.value === sideType;
@@ -538,14 +549,16 @@ function setVal(k, v, exact){ const c = CTL[k];
   render(); }
 function syncControls(){
   for (const k in CTL){ const c = CTL[k];
-    const r = document.getElementById("r-"+k), n = document.getElementById("n-"+k);
+    for (const sfx of ["", "2"]){
+    const r = document.getElementById("r-"+k+sfx), n = document.getElementById("n-"+k+sfx);
+    if (!r || !n) continue;
     if (k === "wdAge"){ const lo = Math.min(70, S.startAge + 1); r.min = n.min = lo; if (S.wdAge < lo) S.wdAge = lo; }
     if (document.activeElement !== r) r.value = S[k];
     if (document.activeElement !== n) n.value = S[k];
     r.style.setProperty("--p", ((S[k] - r.min) / (r.max - r.min) * 100) + "%"); // 線の色をつける長さ
     let label = c.fmt(S[k]);
     if (k === "sideIncome") label = (sideType === "kyuyo" ? "" : "所得 ") + label;
-    document.getElementById("v-"+k).textContent = label; }
+    document.getElementById("v-"+k+sfx).textContent = label; } }
   const lab = document.querySelector('label[for="r-sideIncome"]');
   lab.textContent = sideType === "kyuyo" ? "副業の年間収入（額面）" : "副業の年間所得（売上−経費）";
   const sh = document.getElementById("sideTypeHint");
@@ -565,16 +578,18 @@ function syncControls(){
 /* ====== 積立の計算 ====== */
 // 毎月末に積立・月ごとの複利（年利÷12）。NISAは 年ごとの枠と生涯枠を元本で数え、入りきらない分は課税口座へ
 function simulate(rate){
-  const i = rate/100/12, n = S.startAge, N = (LAST_AGE - n) * 12;
-  let nV=0, tV=0, nC=0, tC=0, life=0, gLife=0, yT=0, yG=0, fullAt=null;
+  const i = rate/100/12, fee = S.fundFee/100/12, n = S.startAge, N = (LAST_AGE - n) * 12;
+  let nV=0, tV=0, nC=0, tC=0, life=0, gLife=0, yT=0, yG=0, fullAt=null, trust=0;
   const pts = [];
   // はじめのお金：成長投資枠へ（入りきらない分は課税口座）
   if (S.lump > 0){ const g = Math.max(0, Math.min(S.lump, NISA_GROWTH_YEAR - yG, NISA_GROWTH_LIFE - gLife, NISA_LIFE - life));
     nV += g; nC += g; life += g; gLife += g; yG += g; tV += S.lump - g; tC += S.lump - g; }
-  pts.push({age:n, cost:nC+tC, value:nV+tV, nC, tC, nV, tV});
+  pts.push({age:n, cost:nC+tC, value:nV+tV, nC, tC, nV, tV, trust});
   for (let m = 1; m <= N; m++){
     if (m > 1 && (m-1) % 12 === 0){ yT = 0; yG = 0; }
+    // 1か月ぶん増えて、信託報酬（年率÷12）が引かれる。切り崩しのタブと同じ計算
     nV *= 1 + i; tV *= 1 + i;
+    { const t1 = nV * fee, t2 = tV * fee; nV -= t1; tV -= t2; trust += t1 + t2; }
     { const c = S.monthly;
       const t = Math.max(0, Math.min(c, NISA_TSUMI_YEAR - yT, NISA_LIFE - life));
       yT += t; life += t;
@@ -584,7 +599,7 @@ function simulate(rate){
       nV += t + g; nC += t + g; tV += x; tC += x;
       if (fullAt === null && life >= NISA_LIFE) fullAt = n + m/12;
     }
-    pts.push({age:n + m/12, cost:nC+tC, value:nV+tV, nC, tC, nV, tV});
+    pts.push({age:n + m/12, cost:nC+tC, value:nV+tV, nC, tC, nV, tV, trust});
   }
   return {pts, fullAt};
 }
@@ -756,6 +771,14 @@ function render(){
   const ir = document.getElementById("inflRes"), cg = goals.find(g => g.age === sel);
   if (ir){ ir.hidden = !(inflOn && cg && cg.ok);
     if (inflOn && cg && cg.ok) ir.innerHTML = `いまの条件では、${cg.age}歳の <b>${fmtYen(cg.a)}</b>（${S.rateA.toFixed(1)}%）は、今のお金に直すと 約<b>${fmtYen(cg.realA)}</b>分です。大きな数字の下と、図の点線にも出ています。`; }
+  const fr = document.getElementById("simFeeRes");
+  if (fr){ let t = "";
+    if (cg && cg.ok && S.fundFee > 0){
+      // 手数料が0のときとの差（引かれた分が、そのあと増えなくなる分もふくむ）
+      const sv = S.fundFee; S.fundFee = 0; const A0 = simulate(S.rateA); S.fundFee = sv;
+      const diff = at(A0, cg.age).value - cg.a;
+      t = `いまの条件では、${cg.age}歳までに引かれる信託報酬の合計は、基準 約<b>${fmtYen(at(A, cg.age).trust)}</b>／堅実想定 約<b>${fmtYen(at(Bs, cg.age).trust)}</b>です。引かれた分はそのあと増えなくなるので、手数料が0の場合より、基準で 約<b>${fmtYen(diff)}</b>少なくなります。大きな数字と図は、これを引いたあとの額です。`; }
+    fr.innerHTML = t; fr.hidden = !t; }
   if (UI.sim) UI.sim({goals, sel, cur: goals.find(g => g.age === sel) || null, rA:S.rateA.toFixed(1), rB:S.rateB.toFixed(1), A, B:Bs, la, lb});
   paintChart();
   renderTax(); renderNisa(A, Bs); renderWd();
@@ -1034,7 +1057,7 @@ function exportCanvas(){
   // 注意
   x.font = `19px ${F}`; x.fillStyle = col.muted;
   const notes = ["目安の計算です。将来の成果を約束するものではなく、特定の商品を勧めるものではありません。投資は元本割れすることがあります。",
-    "利回りは毎年同じ・月ごとの複利・毎月末に積立。手数料・為替・年金は入れていません。税金は概算で、正確な額は税務署・税理士へ。"];
+    "利回りは毎年同じ・月ごとの複利・毎月末に積立。信託報酬" + S.fundFee.toFixed(2) + "%（年）を差し引き。為替・年金は入れていません。税金は概算で、正確な額は税務署・税理士へ。"];
   notes.forEach(t => { x.fillText(t, 70, H - 110 + notes.indexOf(t) * 32); });
   return c;
 }
@@ -1079,7 +1102,7 @@ async function doSave(kind){
 document.getElementById("bPng").addEventListener("click", () => doSave("png"));
 document.getElementById("bPdf").addEventListener("click", () => doSave("pdf"));
 function summaryText(){
-  const L = [`【投資の試算】${S.startAge}歳から毎月${manSen(S.monthly)}${S.lump ? "（最初に" + manSen(S.lump) + "）" : ""}`, `基準${S.rateA.toFixed(1)}%（MSCI ACWI の過去の年平均をもとに）／堅実想定${S.rateB.toFixed(1)}%（GPIF の過去の年平均をもとに）`];
+  const L = [`【投資の試算】${S.startAge}歳から毎月${manSen(S.monthly)}${S.lump ? "（最初に" + manSen(S.lump) + "）" : ""}`, `基準${S.rateA.toFixed(1)}%（MSCI ACWI の過去の年平均をもとに）／堅実想定${S.rateB.toFixed(1)}%（GPIF の過去の年平均をもとに）・信託報酬${S.fundFee.toFixed(2)}%（年）を差し引き`];
   GOALS.forEach(g => { if (g.age <= S.startAge) return; const pa = at(last.A, g.age), pb = at(last.B, g.age);
     L.push(`${g.age}歳：${S.rateA.toFixed(1)}%で${fmtYen(pa.value)}／${S.rateB.toFixed(1)}%で${fmtYen(pb.value)}／元本${fmtYen(pa.cost)}${inflOn ? `（物価が毎年${S.infl.toFixed(1)}%上がる場合、今のお金に直すと ${S.rateA.toFixed(1)}%で約${fmtYen(realValue(pa.value, g.age))}）` : ""}`); });
   L.push(last.A.fullAt ? `NISAの生涯枠は${Math.floor(last.A.fullAt)}歳ごろに使い切る` : "NISAの生涯枠（1,800万円）に収まる");
