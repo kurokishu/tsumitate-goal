@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta property="og:type" content="website"><meta property="og:url" content="https://kurokishu.github.io/tsumitate-goal/"><meta property="og:title" content="Tsumitate Goal｜投資シミュレーター"><meta property="og:description" content="何歳から投資すると60歳・65歳・70歳でいくらになるかを、全世界株式（MSCI ACWI）とGPIFの過去の年平均をもとに比べる無料の投資シミュレーター。副業の税金とNISAの生涯枠も分かります。"><meta property="og:image" content="https://kurokishu.github.io/tsumitate-goal/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website"><meta property="og:url" content="https://kurokishu.github.io/tsumitate-goal/"><meta property="og:title" content="Okane Timeline｜投資シミュレーター"><meta property="og:description" content="何歳から投資すると60歳・65歳・70歳でいくらになるかを、全世界株式（MSCI ACWI）とGPIFの過去の年平均をもとに比べる無料の投資シミュレーター。副業の税金とNISAの生涯枠も分かります。"><meta property="og:image" content="https://kurokishu.github.io/tsumitate-goal/og.png"><meta name="twitter:card" content="summary_large_image">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Tsumitate Goal</title>
+<title>Okane Timeline</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,7 +160,7 @@ p{margin:0 0 8px} .hint{color:var(--muted);font-size:12px;margin:4px 0 0}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--rule-strong)}
 .btn:disabled{opacity:.4}
 .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.qa{margin-top:16px} .qa details{border-top:1px solid var(--rule);padding-block:10px} .qa summary{cursor:pointer;font-size:14px} .qa p{font-size:13px;color:var(--label);margin-top:6px}
+.qa{margin-top:16px} .qa details{border-top:1px solid var(--rule);padding-block:10px} .qa summary{cursor:pointer;font-size:14px} .qa p{font-size:13px;color:var(--label);margin-top:6px} .qa ul{font-size:13px;color:var(--label);margin:4px 0 6px;padding-left:20px} .qa li{margin-bottom:2px}
 .tag{display:inline-block;font-size:11px;border-radius:999px;padding:1px 10px;border:1px solid currentColor}
 .tag.good{color:var(--good)} .tag.warn{color:var(--warn)}
 .nisa-rows{display:grid;gap:12px}
@@ -184,7 +184,7 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
 
 <div class="wrap">
 <header class="top">
-  <h1 class="brand"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 18l5-6 4 3 7-9"/></svg></i>Tsumitate Goal<small>投資シミュレーター</small></h1>
+  <h1 class="brand"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 18l5-6 4 3 7-9"/></svg></i>Okane Timeline<small>投資シミュレーター</small></h1>
   <p class="tagline"><span class="tg-sub">投資シミュレーター｜</span>60・65・70歳の日にいくら？</p>
   <div class="theme" role="group" aria-label="画面の明るさ">
       <button data-theme-set="auto" title="スマホ・パソコンの設定に合わせる" aria-label="自動"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></button>
@@ -258,9 +258,12 @@ footer.legal a{color:var(--muted)} footer.legal ul{padding-left:18px;margin:6px 
         <h2>よくある質問</h2>
         <details><summary>年収は「額面」と「手取り」のどちら？</summary><p><b>額面</b>です。税金や社会保険料を引く前の、1年分の合計（源泉徴収票の「支払金額」）を入れてください。手取りはこのツールが計算します。</p></details>
         <details><summary>ボーナスはどう扱う？</summary><p>税金の計算では、月の給料もボーナスも同じ「給与」です。<b>ボーナスも含めた1年分の額面</b>を入れれば大丈夫です。毎月の天引きの額は違っても、年末調整で1年分をまとめて精算されます。</p></details>
-        <details><summary>日雇いのバイトは、どちらを選ぶ？</summary><p><b>「バイト・パート（給与）」</b>を選んでください。日雇いのバイト代も「給与」なので、本業の給与と合わせて計算します。副業の給与が年20万円以下なら、所得税の確定申告をしなくてよい場合があります（住民税の申告は必要です）。バイト先で天引きされた税金は、確定申告で精算されます。</p></details>
+        <details><summary>日雇いのバイトは「バイト・パート」に入りますか？</summary><p><b>はい、入ります。</b>日雇いのバイト代も「給与」なので、「副業の種類」は<b>「バイト・パート（給与）」</b>を選んでください。本業の給与と合わせて計算します。副業の給与が年20万円以下なら、所得税の確定申告をしなくてよい場合があります（住民税の申告は必要です）。バイト先で天引きされた税金は、確定申告で精算されます。</p></details>
         <details><summary>個人事業主・業務委託の場合は？</summary><p>「副業の種類」を<b>「個人事業主・業務委託など」</b>にして、売上から経費を引いた<b>所得</b>を入れてください。本業の給与と合算して税金を計算します。所得が年20万円を超えると確定申告が必要です。青色申告の特別控除などは入れていません。</p></details>
-        <details><summary>フリマで不用品を売ったお金も入れる？</summary><p><b>入れません。</b>家具・服・通勤用の自動車など、普段の生活で使っていた物を売ったお金には、税金がかかりません。個人事業主として別の仕事をしていても、合算しなくて大丈夫です。ただし、貴金属・宝石・書画・骨董などで1個（1組）30万円を超える物や、利益を得るために仕入れて繰り返し売る場合（転売）は、税金の対象になります。（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3105.htm" target="_blank" rel="noopener">国税庁 No.3105</a>）</p></details>
+        <details><summary>フリマで不用品を売ったお金は、合算が要りますか？</summary><p><b>要りません。</b>家具・服・通勤用の自動車など、普段の生活で使っていた物を売ったお金には、税金がかかりません。個人事業主として別の仕事をしていても、合算しなくて大丈夫です。</p>
+          <p>ただし、次の2つは税金の対象になります。</p>
+          <ul><li>貴金属・宝石・書画・骨董などで、1個（1組）30万円を超える物</li><li>利益を得るために仕入れて、繰り返し売る場合（転売）</li></ul>
+          <p class="hint">出どころ：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3105.htm" target="_blank" rel="noopener">国税庁 No.3105 譲渡所得の対象となる資産と課税方法</a></p></details>
       </div>
     </div>
   </div>
@@ -740,7 +743,7 @@ function exportCanvas(){
   const card = (cy, chh) => { if (!ES.cards) return; x.save(); x.fillStyle = col.card; x.strokeStyle = ES.rule || col.rule; x.lineWidth = 2; x.beginPath(); x.roundRect ? x.roundRect(40, cy, W - 80, chh, 28) : x.rect(40, cy, W - 80, chh); x.fill(); x.stroke(); x.restore(); };
   card(236, 3 * 70 + 64);
   x.fillStyle = col.ink; x.textBaseline = "top"; x.textAlign = "left";
-  x.font = `800 52px ${FM}`; x.fillText("Tsumitate Goal", 70, 60);
+  x.font = `800 52px ${FM}`; x.fillText("Okane Timeline", 70, 60);
   x.font = `26px ${F}`; x.fillStyle = col.muted; x.fillText("何歳から積み立てると、60歳・65歳・70歳の日にいくら？", 70, 128);
   const d = new Date(); x.textAlign = "right"; x.fillText(`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日の試算`, W - 70, 72);
   x.textAlign = "left"; x.fillStyle = col.ink; x.font = `bold 28px ${F}`;
